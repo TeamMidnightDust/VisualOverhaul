@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "eu.midnightdust.visualoverhaul.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinBrewingStandBlockEntity",
+    "MixinJukeboxBlockEntity"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
