@@ -33,6 +33,8 @@
   ],
 
   "depends": {
-    "fabric": "*"
+    "fabric": ">=0.28.4",
+    "autoconfig1u": "*",
+    "cloth-config2": "*"
   }
 }

@@ -8,43 +8,46 @@ import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.util.Tickable;
+import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.stream.Stream;
 
-@Mixin(JukeboxBlockEntity.class)
-public abstract class MixinJukeboxBlockEntity extends BlockEntity implements Tickable {
+@Mixin(AbstractFurnaceBlockEntity.class)
+public abstract class MixinAbstractFurnaceBlockEntity extends LockableContainerBlockEntity {
 
-    @Shadow private ItemStack record;
+    @Shadow protected DefaultedList<ItemStack> inventory;
     Boolean invUpdate = true;
     int playerUpdate = -1;
 
-    private MixinJukeboxBlockEntity(BlockEntityType<?> blockEntityType) {
+    private MixinAbstractFurnaceBlockEntity(BlockEntityType<?> blockEntityType) {
         super(blockEntityType);
     }
 
-    @Unique
-    public void tick() {
+    @Inject(at = @At("TAIL"), method = "tick")
+    public void tick(CallbackInfo ci) {
         if (!this.world.isClient && (invUpdate || world.getPlayers().size() == playerUpdate)) {
             Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world, getPos());
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
-            passedData.writeItemStack(record);
+            passedData.writeItemStack(inventory.get(0));
+            passedData.writeItemStack(inventory.get(1));
+            passedData.writeItemStack(inventory.get(2));
 
-            watchingPlayers.forEach(player -> ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(player, VisualOverhaul.UPDATE_RECORD, passedData));
+            passedData.writeString(String.valueOf(inventory));
+            watchingPlayers.forEach(player -> ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(player, VisualOverhaul.UPDATE_FURNACE_ITEMS, passedData));
             invUpdate = false;
         }
         playerUpdate = world.getPlayers().size();
     }
 
-    @Inject(at = @At("RETURN"), method = "getRecord", cancellable = true)
-    public void getRecord(CallbackInfoReturnable cir) {
+    @Inject(at = @At("RETURN"), method = "getStack", cancellable = true)
+    public void getStack(int slot, CallbackInfoReturnable cir) {
         this.invUpdate = true;
     }
 }

@@ -23,25 +23,17 @@ import java.util.stream.Stream;
 @Mixin(BrewingStandBlockEntity.class)
 public abstract class MixinBrewingStandBlockEntity extends LockableContainerBlockEntity {
 
-
     @Shadow private DefaultedList<ItemStack> inventory;
-    public ItemStack item1;
-    public ItemStack item2;
-    public ItemStack item3;
-    Boolean sendData = true;
+    Boolean invUpdate = true;
+    int playerUpdate = -1;
 
     private MixinBrewingStandBlockEntity(BlockEntityType<?> blockEntityType) {
         super(blockEntityType);
-
     }
 
     @Inject(at = @At("TAIL"), method = "tick")
     public void tick(CallbackInfo ci) {
-        item1 = inventory.get(0);
-        item2 = inventory.get(1);
-        item3 = inventory.get(2);
-
-        if (!this.world.isClient) {
+        if (!this.world.isClient && (invUpdate || world.getPlayers().size() == playerUpdate)) {
             Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world, getPos());
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
@@ -53,12 +45,13 @@ public abstract class MixinBrewingStandBlockEntity extends LockableContainerBloc
 
             passedData.writeString(String.valueOf(inventory));
             watchingPlayers.forEach(player -> ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(player, VisualOverhaul.UPDATE_POTION_BOTTLES, passedData));
-            sendData = false;
+            invUpdate = false;
         }
+        playerUpdate = world.getPlayers().size();
     }
 
     @Inject(at = @At("RETURN"), method = "getStack", cancellable = true)
     public void getStack(int slot, CallbackInfoReturnable cir) {
-        this.sendData = true;
+        this.invUpdate = true;
     }
 }

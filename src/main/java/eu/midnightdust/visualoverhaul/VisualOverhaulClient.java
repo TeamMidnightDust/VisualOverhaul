@@ -2,6 +2,7 @@ package eu.midnightdust.visualoverhaul;
 
 import eu.midnightdust.visualoverhaul.block.JukeboxTop;
 import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRenderer;
+import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import me.sargunvohra.mcmods.autoconfig1u.AutoConfig;
@@ -17,6 +18,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
+import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
@@ -27,8 +29,7 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 
-import static eu.midnightdust.visualoverhaul.VisualOverhaul.UPDATE_POTION_BOTTLES;
-import static eu.midnightdust.visualoverhaul.VisualOverhaul.UPDATE_RECORD;
+import static eu.midnightdust.visualoverhaul.VisualOverhaul.*;
 
 public class VisualOverhaulClient implements ClientModInitializer {
     public static VOConfig VO_CONFIG;
@@ -45,9 +46,11 @@ public class VisualOverhaulClient implements ClientModInitializer {
 
         BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.JUKEBOX, RenderLayer.getCutout());
         BlockRenderLayerMapImpl.INSTANCE.putBlock(JukeBoxTop, RenderLayer.getCutout());
+        BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.FURNACE, RenderLayer.getCutout());
 
         BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.BREWING_STAND, BrewingStandBlockEntityRenderer::new);
         BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
+        BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
 
         Registry.ITEM.forEach((item) -> {
             if(item instanceof MusicDiscItem) {
@@ -80,9 +83,24 @@ public class VisualOverhaulClient implements ClientModInitializer {
                         blockEntity.setRecord(record);
                     });
                 });
+        ClientSidePacketRegistryImpl.INSTANCE.register(UPDATE_FURNACE_ITEMS,
+                (packetContext, attachedData) -> {
+                    BlockPos pos = attachedData.readBlockPos();
+                    DefaultedList<ItemStack> inv = DefaultedList.ofSize(3, ItemStack.EMPTY);
+                    for (int i = 0; i < 2; i++) {
+                        inv.set(i, attachedData.readItemStack());
+                    }
+                    packetContext.getTaskQueue().execute(() -> {
+                        FurnaceBlockEntity blockEntity = (FurnaceBlockEntity)MinecraftClient.getInstance().world.getBlockEntity(pos);
+                        blockEntity.setStack(0,inv.get(0));
+                        blockEntity.setStack(1,inv.get(1));
+                        blockEntity.setStack(2,inv.get(2));
+                    });
+                });
 
         FabricLoader.getInstance().getModContainer("visualoverhaul").ifPresent(modContainer -> {
-            ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul:nobottles"), "resourcepacks/visualoverhaul", modContainer, true);
+            ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul:nobottles"), "resourcepacks/nobrewingbottles", modContainer, true);
+            ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul:fancyfurnace"), "resourcepacks/fancyfurnace", modContainer, true);
         });
     }
 }

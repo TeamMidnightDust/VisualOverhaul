@@ -1,6 +1,5 @@
 package eu.midnightdust.visualoverhaul.block.renderer;
 
-import eu.midnightdust.visualoverhaul.VisualOverhaul;
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
