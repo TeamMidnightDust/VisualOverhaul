@@ -4,6 +4,7 @@ import eu.midnightdust.visualoverhaul.VisualOverhaul;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.server.PlayerStream;
 import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -31,19 +32,21 @@ public abstract class MixinAbstractFurnaceBlockEntity extends LockableContainerB
 
     @Inject(at = @At("TAIL"), method = "tick")
     public void tick(CallbackInfo ci) {
-        if (!this.world.isClient && (invUpdate || world.getPlayers().size() == playerUpdate)) {
-            Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world, getPos());
-            PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-            passedData.writeBlockPos(pos);
-            passedData.writeItemStack(inventory.get(0));
-            passedData.writeItemStack(inventory.get(1));
-            passedData.writeItemStack(inventory.get(2));
+        if (this.world.getBlockState(this.pos).getBlock().is(Blocks.FURNACE)) {
+            if (!this.world.isClient && (invUpdate || world.getPlayers().size() == playerUpdate)) {
+                Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world, getPos());
+                PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+                passedData.writeBlockPos(pos);
+                passedData.writeItemStack(inventory.get(0));
+                passedData.writeItemStack(inventory.get(1));
+                passedData.writeItemStack(inventory.get(2));
 
-            passedData.writeString(String.valueOf(inventory));
-            watchingPlayers.forEach(player -> ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(player, VisualOverhaul.UPDATE_FURNACE_ITEMS, passedData));
-            invUpdate = false;
+                passedData.writeString(String.valueOf(inventory));
+                watchingPlayers.forEach(player -> ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(player, VisualOverhaul.UPDATE_FURNACE_ITEMS, passedData));
+                invUpdate = false;
+            }
+            playerUpdate = world.getPlayers().size();
         }
-        playerUpdate = world.getPlayers().size();
     }
 
     @Inject(at = @At("RETURN"), method = "getStack", cancellable = true)

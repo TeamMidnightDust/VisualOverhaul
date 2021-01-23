@@ -58,6 +58,7 @@ public class VisualOverhaulClient implements ClientModInitializer {
             }
         });
 
+
         ClientSidePacketRegistryImpl.INSTANCE.register(UPDATE_POTION_BOTTLES,
                 (packetContext, attachedData) -> {
                     BlockPos pos = attachedData.readBlockPos();

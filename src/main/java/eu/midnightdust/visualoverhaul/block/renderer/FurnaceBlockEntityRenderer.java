@@ -62,7 +62,7 @@ public class FurnaceBlockEntityRenderer extends BlockEntityRenderer<FurnaceBlock
 
     @Override
     public void render(FurnaceBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (VisualOverhaulClient.VO_CONFIG.furnace) {
+        if (VisualOverhaulClient.VO_CONFIG.furnace && blockEntity.getCachedState().getBlock().is(Blocks.FURNACE)) {
             BlockState blockState = blockEntity.getCachedState();
             int lightAtBlock = WorldRenderer.getLightmapCoordinates(blockEntity.getWorld(), blockEntity.getPos().offset(blockState.get(AbstractFurnaceBlock.FACING)));
             ItemStack item1 = blockEntity.getStack(0);
