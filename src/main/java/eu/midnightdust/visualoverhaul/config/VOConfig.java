@@ -1,13 +1,14 @@
 package eu.midnightdust.visualoverhaul.config;
 
-import me.sargunvohra.mcmods.autoconfig1u.ConfigData;
-import me.sargunvohra.mcmods.autoconfig1u.annotation.Config;
-
-@Config(name = "visualoverhaul")
-public class VOConfig implements ConfigData {
-
-    public boolean brewingstand = true;
-    public boolean jukebox = true;
-    public boolean jukebox_fake_block = true;
-    public boolean furnace = true;
+public class VOConfig extends MidnightConfig {
+    @Entry
+    public static boolean brewingstand = true;
+    @Entry
+    public static boolean jukebox = true;
+    @Entry
+    public static boolean jukebox_fake_block = true;
+    @Entry
+    public static boolean furnace = true;
+    @Entry
+    public static boolean coloredItems = true;
 }

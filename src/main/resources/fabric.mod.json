@@ -20,6 +20,9 @@
 
   "environment": "*",
   "entrypoints": {
+    "main": [
+      "eu.midnightdust.visualoverhaul.VisualOverhaul"
+    ],
     "client": [
       "eu.midnightdust.visualoverhaul.VisualOverhaulClient"
     ],
@@ -34,7 +37,6 @@
 
   "depends": {
     "fabric": ">=0.28.4",
-    "autoconfig1u": "*",
-    "cloth-config2": "*"
+    "minecraft": "1.16.x"
   }
 }

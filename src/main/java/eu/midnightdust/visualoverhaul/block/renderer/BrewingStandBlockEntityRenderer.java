@@ -1,6 +1,6 @@
 package eu.midnightdust.visualoverhaul.block.renderer;
 
-import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
+import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -25,7 +25,7 @@ public class BrewingStandBlockEntityRenderer extends BlockEntityRenderer<Brewing
     @Override
     public void render(BrewingStandBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
 
-        if (VisualOverhaulClient.VO_CONFIG.brewingstand) {
+        if (VOConfig.brewingstand) {
             int lightAtBlock = WorldRenderer.getLightmapCoordinates(blockEntity.getWorld(), blockEntity.getPos());
             ItemStack item1 = blockEntity.getStack(0);
             ItemStack item2 = blockEntity.getStack(1);
