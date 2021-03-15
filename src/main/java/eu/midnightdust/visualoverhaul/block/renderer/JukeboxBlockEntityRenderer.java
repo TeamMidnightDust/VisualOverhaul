@@ -4,6 +4,7 @@ import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
@@ -42,7 +43,7 @@ public class JukeboxBlockEntityRenderer extends BlockEntityRenderer<JukeboxBlock
             MinecraftClient.getInstance().getItemRenderer().renderItem(record, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers);
 
             matrices.pop();
-            if (VOConfig.jukebox_fake_block) {
+            if (VOConfig.jukebox_fake_block && blockEntity.getWorld().getBlockState(blockEntity.getPos().up()).getBlock() == Blocks.AIR) {
                 matrices.push();
                 matrices.translate(0f, 1f, 0f);
                 if (record == ItemStack.EMPTY) {
