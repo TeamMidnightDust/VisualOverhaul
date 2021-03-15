@@ -1,5 +1,6 @@
 package eu.midnightdust.visualoverhaul.block;
 
+import eu.midnightdust.visualoverhaul.VisualOverhaul;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -12,7 +13,6 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+@SuppressWarnings("deprecation")
 public class PuddleBlock extends Block {
 
     protected final FlowableFluid fluid;
@@ -121,7 +122,38 @@ public class PuddleBlock extends Block {
     }
 
     public boolean canPlaceAt(BlockState state, WorldView world, BlockPos pos) {
-        return world.getBlockState(pos.down()).isSideSolidFullSquare(world,pos,Direction.UP);
+        if (world.getBlockState(pos) == Blocks.AIR.getDefaultState() || world.getBlockState(pos) == VisualOverhaul.Puddle.getDefaultState()) {
+            int i;
+            // Check if there are fluids on the sides or corners of the block above
+            for (i = 2; i < 6; ++i) {
+                BlockPos pos1 = pos.up();
+                BlockPos pos2 = pos1.offset(Direction.byId(i));
+                if (!world.getFluidState(pos1.offset(Direction.byId(i))).isEmpty()) {
+                    // When sides of the block above have water don't place the puddle
+                    return false;
+                }
+                if (!world.getFluidState(pos2.offset(Direction.byId(i).rotateYClockwise())).isEmpty()) {
+                    // When corners of the block above have water don't place the puddle
+                    return false;
+                }
+            }
+            // Check if there are fluids on the sides or corners of the block below
+            for (i = 2; i < 6; ++i) {
+                BlockPos pos1 = pos.down();
+                BlockPos pos2 = pos1.offset(Direction.byId(i));
+                if (!world.getFluidState(pos1.offset(Direction.byId(i))).isEmpty()) {
+                    // When sides of the block below have water don't place the puddle
+                    return false;
+                }
+                if (!world.getFluidState(pos2.offset(Direction.byId(i).rotateYClockwise())).isEmpty()) {
+                    // When corners of the block below have water don't place the puddle
+                    return false;
+                }
+            }
+            return world.getBlockState(pos.down()).isSideSolidFullSquare(world, pos, Direction.UP);
+        }
+        // When there's already another block at the position don't place the puddle
+        else return false;
     }
     public BlockState getStateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom) {
         return !state.canPlaceAt(world, pos) ? Blocks.AIR.getDefaultState() : super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom);
