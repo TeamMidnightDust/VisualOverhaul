@@ -8,6 +8,9 @@
     "MixinAbstractFurnaceBlockEntity",
     "MixinServerWorld"
   ],
+  "client": [
+    "MixinSoundSystem"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

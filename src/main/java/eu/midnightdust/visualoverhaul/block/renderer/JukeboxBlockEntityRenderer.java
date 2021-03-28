@@ -2,6 +2,7 @@ package eu.midnightdust.visualoverhaul.block.renderer;
 
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
+import eu.midnightdust.visualoverhaul.util.sound.SoundTest;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Blocks;
@@ -17,11 +18,15 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.Random;
 
 @Environment(EnvType.CLIENT)
 public class JukeboxBlockEntityRenderer extends BlockEntityRenderer<JukeboxBlockEntity> {
+    private ItemStack record;
+    private Identifier discItem;
 
     public JukeboxBlockEntityRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
         super(blockEntityRenderDispatcher);
@@ -32,7 +37,26 @@ public class JukeboxBlockEntityRenderer extends BlockEntityRenderer<JukeboxBlock
 
         if (VOConfig.jukebox) {
             int lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.getWorld(), blockEntity.getPos().up());
-            ItemStack record = blockEntity.getRecord();
+
+            // Gets the record sound played at the position of the jukebox //
+            if (SoundTest.getSound(blockEntity.getPos()) != null) {
+                // Converts the Sound Id to the item id of the approprieate disc (minecraft:music_disc.cat -> minecraft:music_disc_cat) //
+                discItem = new Identifier(String.valueOf(SoundTest.getSound(blockEntity.getPos())).replace(".", "_"));
+            }
+            // If the sound is stopped or no sound is playing, the stack is set to an empty stack //
+            if (SoundTest.getSound(blockEntity.getPos()) == null) {
+                discItem = null;
+                record = ItemStack.EMPTY;
+            }
+            // Tries to get the disc item from the registry //
+            else if (Registry.ITEM.getOrEmpty(discItem).isPresent()) {
+                record = new ItemStack(Registry.ITEM.get(discItem));
+            }
+            // Fallback to serverside implementation if the id doesn't match an item //
+            else {
+                record = blockEntity.getRecord();
+            }
+
             record.setCount(2);
 
             matrices.push();
