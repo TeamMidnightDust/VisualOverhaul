@@ -1,0 +1,16 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer1": "phonos:item/music_disc_outer",
+		"layer0": "phonos:item/music_disc_inner"
+	},
+	
+	"overrides": [
+        {
+            "predicate": {
+                "round": 1
+            },
+            "model": "phonos:item/custom_music_disc_round"
+        }
+    ]
+}

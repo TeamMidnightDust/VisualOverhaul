@@ -4,7 +4,10 @@ import eu.midnightdust.visualoverhaul.block.JukeboxTop;
 import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
+import eu.midnightdust.visualoverhaul.compat.phonos.block.renderer.RadioJukeboxBlockEntityRenderer;
+import eu.midnightdust.visualoverhaul.compat.phonos.init.PhonosCompatInit;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
+import io.github.foundationgames.phonos.block.PhonosBlocks;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
@@ -12,7 +15,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
-import net.fabricmc.fabric.impl.client.rendering.ColorProviderRegistryImpl;
 import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
@@ -22,6 +24,7 @@ import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.FurnaceBlockEntity;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -34,8 +37,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BuiltinBiomes;
-
-import java.util.Objects;
+import net.minecraft.world.level.ColorResolver;
 
 import static eu.midnightdust.visualoverhaul.VisualOverhaul.*;
 
@@ -52,6 +54,7 @@ public class VisualOverhaulClient implements ClientModInitializer {
         // Block only registered on client, because it's just used for the renderer //
         Registry.register(Registry.BLOCK, new Identifier("visualoverhaul","jukebox_top"), JukeBoxTop);
 
+
         BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.JUKEBOX, RenderLayer.getCutout());
         BlockRenderLayerMapImpl.INSTANCE.putBlock(JukeBoxTop, RenderLayer.getCutout());
         BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.FURNACE, RenderLayer.getCutout());
@@ -60,8 +63,14 @@ public class VisualOverhaulClient implements ClientModInitializer {
         BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
         BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
 
+        // Phonos Compat //
+        if (FabricLoader.getInstance().isModLoaded("phonos")) {
+            PhonosCompatInit.init();
+            BlockEntityRendererRegistry.INSTANCE.register(PhonosBlocks.RADIO_JUKEBOX_ENTITY, RadioJukeboxBlockEntityRenderer::new);
+        }
+
         Registry.ITEM.forEach((item) -> {
-            if(item instanceof MusicDiscItem) {
+            if(item instanceof MusicDiscItem || item.getName().getString().toLowerCase().contains("music_disc") || item.getName().getString().toLowerCase().contains("dynamic_disc")) {
                 FabricModelPredicateProviderRegistry.register(item, new Identifier("round"), (stack, world, entity) -> stack.getCount() == 2 ? 1.0F : 0.0F);
             }
         });
@@ -119,22 +128,27 @@ public class VisualOverhaulClient implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul:coloredwaterbucket"), "resourcepacks/coloredwaterbucket", modContainer, true);
         });
 
-        // Context Colored Items
+        // Biome-colored Items
         if (VOConfig.coloredItems) {
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 int waterColor;
                 int foliageColor;
+                int grassColor;
                 if (client.world != null) {
-                    Biome biome = client.world.getBiome(client.player.getBlockPos());
-                    waterColor = biome.getWaterColor();
-                    foliageColor = biome.getFoliageColor();
+                    waterColor = client.world.getColor(client.player.getBlockPos(), BiomeColors.WATER_COLOR);
+                    foliageColor = client.world.getColor(client.player.getBlockPos(), BiomeColors.FOLIAGE_COLOR);
+                    grassColor = client.world.getColor(client.player.getBlockPos(), BiomeColors.GRASS_COLOR);
                 } else {
                     waterColor = BuiltinBiomes.PLAINS.getWaterColor();
                     foliageColor = BuiltinBiomes.PLAINS.getFoliageColor();
+                    grassColor = BuiltinBiomes.PLAINS.getFoliageColor();
                 }
-                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> waterColor, VisualOverhaul.Puddle);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.WATER_BUCKET);
-                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.GRASS_BLOCK);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.GRASS_BLOCK);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.GRASS);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.TALL_GRASS);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.FERN);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.LARGE_FERN);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.ACACIA_LEAVES);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.DARK_OAK_LEAVES);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.JUNGLE_LEAVES);
@@ -145,12 +159,19 @@ public class VisualOverhaulClient implements ClientModInitializer {
                     }
                     return tintIndex > 0 ? -1 : PotionUtil.getColor(stack);
                 }, Items.POTION);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
+                    if (PotionUtil.getPotion(stack) == Potions.WATER && tintIndex == 0) {
+                        return waterColor;
+                    }
+                    return tintIndex > 0 ? -1 : PotionUtil.getColor(stack);
+                }, Items.SPLASH_POTION);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
+                    if (PotionUtil.getPotion(stack) == Potions.WATER && tintIndex == 0) {
+                        return waterColor;
+                    }
+                    return tintIndex > 0 ? -1 : PotionUtil.getColor(stack);
+                }, Items.LINGERING_POTION);
             });
         }
-        // Else just register a static color for our puddle item
-        else {
-            ColorProviderRegistry.ITEM.register((stack, tintIndex) -> BuiltinBiomes.PLAINS.getWaterColor(), Puddle);
-        }
-        ColorProviderRegistry.BLOCK.register((state, view, pos, tintIndex) -> Objects.requireNonNull(ColorProviderRegistryImpl.BLOCK.get(Blocks.WATER)).getColor(state, view, pos, tintIndex), Puddle);
     }
 }

@@ -1,0 +1,15 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "extra_discs:item/music_disc_sometimes_i_make_video_game_music"
+	},
+	
+	"overrides": [
+        {
+            "predicate": {
+                "round": 1
+            },
+            "model": "extra_discs:item/music_disc_sometimes_i_make_video_game_music_round"
+        }
+    ]
+}

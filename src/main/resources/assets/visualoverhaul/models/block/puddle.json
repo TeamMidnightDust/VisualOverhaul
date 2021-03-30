@@ -1,7 +1,0 @@
-{
-	"credit": "made by Motschen",
-	"parent": "block/block",
-	"textures": {
-		"particle": "block/water_still"
-	}
-}

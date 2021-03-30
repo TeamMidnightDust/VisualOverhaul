@@ -1,0 +1,6 @@
+{
+    "parent": "visualoverhaul:block/phonos/jukebox_top_playing_0",
+    "textures": {
+        "4": "phonos:block/speaker_top_7"
+    }
+}

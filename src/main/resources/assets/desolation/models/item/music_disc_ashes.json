@@ -1,0 +1,15 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "desolation:item/music_disc_ashes"
+	},
+	
+	"overrides": [
+        {
+            "predicate": {
+                "round": 1
+            },
+            "model": "desolation:item/music_disc_ashes_round"
+        }
+    ]
+}

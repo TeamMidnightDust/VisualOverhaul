@@ -26,11 +26,15 @@ public abstract class MixinSoundSystem {
         }
     }
 
-    @Inject(at = @At("TAIL"),method = "stop(Lnet/minecraft/client/sound/SoundInstance;)V")
+    @Inject(at = @At("HEAD"),method = "stop(Lnet/minecraft/client/sound/SoundInstance;)V")
     public void onStopRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
-        if (soundInstance.getCategory().equals(SoundCategory.RECORDS) && SoundTest.soundPos.containsKey(new BlockPos(soundInstance.getX(),soundInstance.getY(),soundInstance.getZ()))) {
-            jukeboxPos = new BlockPos(soundInstance.getX(),soundInstance.getY(),soundInstance.getZ());
-            SoundTest.soundPos.remove(jukeboxPos,soundInstance.getId());
+        if (soundInstance != null) {
+            if (soundInstance.getCategory().equals(SoundCategory.RECORDS)) {
+                jukeboxPos = new BlockPos(soundInstance.getX(), soundInstance.getY(), soundInstance.getZ());
+                if (SoundTest.soundPos.containsKey(jukeboxPos)) {
+                    SoundTest.soundPos.remove(jukeboxPos, soundInstance.getId());
+                }
+            }
         }
     }
 }

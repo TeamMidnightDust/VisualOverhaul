@@ -5,6 +5,5 @@
 	"visualoverhaul.midnightconfig.jukebox_fake_block":"Enable fake block on jukebox top",
 	"visualoverhaul.midnightconfig.furnace":"Enable Furnace Enhancements",
 	"visualoverhaul.midnightconfig.coloredItems":"Enable biome-based item colors",
-	"visualoverhaul.midnightconfig.coloredItems.tooltip":"Needs restart!",
-	"block.visualoverhaul.puddle":"Puddle"
+	"visualoverhaul.midnightconfig.coloredItems.tooltip":"Needs restart!"
 }

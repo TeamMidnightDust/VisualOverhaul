@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.Random;
 
@@ -34,28 +35,35 @@ public class JukeboxBlockEntityRenderer extends BlockEntityRenderer<JukeboxBlock
 
     @Override
     public void render(JukeboxBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-
         if (VOConfig.jukebox) {
             int lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.getWorld(), blockEntity.getPos().up());
 
-            // Gets the record sound played at the position of the jukebox //
-            if (SoundTest.getSound(blockEntity.getPos()) != null) {
+            // Tries to get the disc using the serverside method
+            if (blockEntity.getRecord() != ItemStack.EMPTY) {
+                record = blockEntity.getRecord().copy();
+            }
+            // Else gets the record sound played at the position of the jukebox //
+            else if (SoundTest.getSound(blockEntity.getPos()) != null) {
                 // Converts the Sound Id to the item id of the approprieate disc (minecraft:music_disc.cat -> minecraft:music_disc_cat) //
                 discItem = new Identifier(String.valueOf(SoundTest.getSound(blockEntity.getPos())).replace(".", "_"));
+
+                // Tries to get the disc item from the registry //
+                if (Registry.ITEM.getOrEmpty(discItem).isPresent()) {
+
+                    record = new ItemStack(Registry.ITEM.get(discItem));
+                }
+                else {
+                    LogManager.getLogger("VisualOverhaul").warn("Error getting music disc item for" + SoundTest.getSound(blockEntity.getPos()));
+                    discItem = null;
+                    record = ItemStack.EMPTY;
+                }
             }
             // If the sound is stopped or no sound is playing, the stack is set to an empty stack //
-            if (SoundTest.getSound(blockEntity.getPos()) == null) {
+            else {
                 discItem = null;
                 record = ItemStack.EMPTY;
             }
-            // Tries to get the disc item from the registry //
-            else if (Registry.ITEM.getOrEmpty(discItem).isPresent()) {
-                record = new ItemStack(Registry.ITEM.get(discItem));
-            }
-            // Fallback to serverside implementation if the id doesn't match an item //
-            else {
-                record = blockEntity.getRecord();
-            }
+
 
             record.setCount(2);
 

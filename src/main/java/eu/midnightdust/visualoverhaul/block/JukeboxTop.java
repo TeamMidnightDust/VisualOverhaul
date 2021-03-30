@@ -9,15 +9,14 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.Properties;
 
 public class JukeboxTop extends Block {
+    private static final BooleanProperty HAS_RECORD = Properties.HAS_RECORD;
 
-        private static final BooleanProperty HAS_RECORD = Properties.HAS_RECORD;
-
-        public JukeboxTop() {
-            super(FabricBlockSettings.copy(Blocks.JUKEBOX));
-            this.setDefaultState(this.stateManager.getDefaultState().with(HAS_RECORD,false));
-        }
-        @Override
-        protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-            builder.add(HAS_RECORD);
-        }
+    public JukeboxTop() {
+        super(FabricBlockSettings.copy(Blocks.JUKEBOX));
+        this.setDefaultState(this.stateManager.getDefaultState().with(HAS_RECORD,false));
     }
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(HAS_RECORD);
+    }
+}

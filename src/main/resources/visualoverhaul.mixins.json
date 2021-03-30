@@ -5,8 +5,7 @@
   "mixins": [
     "MixinBrewingStandBlockEntity",
     "MixinJukeboxBlockEntity",
-    "MixinAbstractFurnaceBlockEntity",
-    "MixinServerWorld"
+    "MixinAbstractFurnaceBlockEntity"
   ],
   "client": [
     "MixinSoundSystem"

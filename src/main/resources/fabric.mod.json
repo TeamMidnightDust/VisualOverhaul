@@ -20,9 +20,6 @@
 
   "environment": "*",
   "entrypoints": {
-    "main": [
-      "eu.midnightdust.visualoverhaul.VisualOverhaul"
-    ],
     "client": [
       "eu.midnightdust.visualoverhaul.VisualOverhaulClient"
     ],
