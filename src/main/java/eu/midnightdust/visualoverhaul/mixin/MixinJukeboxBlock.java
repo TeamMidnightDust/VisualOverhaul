@@ -3,34 +3,46 @@ package eu.midnightdust.visualoverhaul.mixin;
 import eu.midnightdust.visualoverhaul.VisualOverhaul;
 import eu.midnightdust.visualoverhaul.util.JukeboxPacketUpdate;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.server.PlayerStream;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
+import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.block.BlockWithEntity;
+import net.minecraft.block.JukeboxBlock;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.entity.BlockEntityTicker;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.stream.Stream;
 
-@Mixin(JukeboxBlockEntity.class)
-public abstract class MixinJukeboxBlockEntity extends BlockEntity {
+@Mixin(JukeboxBlock.class)
+public abstract class MixinJukeboxBlock extends BlockWithEntity {
 
-    public MixinJukeboxBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
-        super(type, pos, state);
+    protected MixinJukeboxBlock(Settings settings) {
+        super(settings);
     }
 
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
+        return world.isClient() ? null : checkType(type, BlockEntityType.JUKEBOX, MixinJukeboxBlock::tick);
+    }
     @Unique
     private static void tick(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity) {
         if (!world.isClient && (JukeboxPacketUpdate.invUpdate || world.getPlayers().size() == JukeboxPacketUpdate.playerUpdate)) {
-            Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world, pos);
+            Stream<ServerPlayerEntity> watchingPlayers = PlayerLookup.tracking(blockEntity).stream();
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
             passedData.writeItemStack(blockEntity.getRecord());
@@ -40,9 +52,5 @@ public abstract class MixinJukeboxBlockEntity extends BlockEntity {
         }
         JukeboxPacketUpdate.playerUpdate = world.getPlayers().size();
     }
-
-    @Inject(at = @At("RETURN"), method = "getRecord", cancellable = true)
-    public void getRecord(CallbackInfoReturnable<ItemStack> cir) {
-        JukeboxPacketUpdate.invUpdate = true;
-    }
 }
+
