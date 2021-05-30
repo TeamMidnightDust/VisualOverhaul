@@ -1,6 +1,6 @@
 package eu.midnightdust.visualoverhaul.mixin;
 
-import eu.midnightdust.visualoverhaul.util.SoundTest;
+import eu.midnightdust.visualoverhaul.util.sound.SoundTest;
 import net.minecraft.client.sound.SoundInstance;
 import net.minecraft.client.sound.SoundSystem;
 import net.minecraft.sound.SoundCategory;
@@ -19,7 +19,7 @@ public abstract class MixinSoundSystem {
     private BlockPos jukeboxPos;
 
     @Inject(at = @At("TAIL"),method = "play(Lnet/minecraft/client/sound/SoundInstance;)V")
-    public void vo$onPlayRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
+    public void onPlayRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
         if (soundInstance.getCategory().equals(SoundCategory.RECORDS) && this.started) {
             jukeboxPos = new BlockPos(soundInstance.getX(),soundInstance.getY(),soundInstance.getZ());
             SoundTest.soundPos.put(jukeboxPos, soundInstance.getId());
@@ -27,7 +27,7 @@ public abstract class MixinSoundSystem {
     }
 
     @Inject(at = @At("HEAD"),method = "stop(Lnet/minecraft/client/sound/SoundInstance;)V")
-    public void vo$onStopRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
+    public void onStopRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
         if (soundInstance != null) {
             if (soundInstance.getCategory().equals(SoundCategory.RECORDS)) {
                 jukeboxPos = new BlockPos(soundInstance.getX(), soundInstance.getY(), soundInstance.getZ());

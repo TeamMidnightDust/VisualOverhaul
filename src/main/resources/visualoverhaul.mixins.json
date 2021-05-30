@@ -3,10 +3,9 @@
   "package": "eu.midnightdust.visualoverhaul.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinAbstractFurnaceBlockEntity",
     "MixinBrewingStandBlockEntity",
-    "MixinJukeboxBlock",
-    "MixinJukeboxBlockEntity"
+    "MixinJukeboxBlockEntity",
+    "MixinAbstractFurnaceBlockEntity"
   ],
   "client": [
     "MixinSoundSystem"

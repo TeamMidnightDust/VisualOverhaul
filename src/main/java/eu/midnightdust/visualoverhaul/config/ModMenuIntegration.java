@@ -1,8 +1,7 @@
 package eu.midnightdust.visualoverhaul.config;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
-import eu.midnightdust.lib.config.MidnightConfig;
+import io.github.prospector.modmenu.api.ConfigScreenFactory;
+import io.github.prospector.modmenu.api.ModMenuApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
@@ -11,6 +10,6 @@ public class ModMenuIntegration implements ModMenuApi {
 
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> MidnightConfig.getScreen(parent,"visualoverhaul");
+        return parent -> new VOConfig().getScreen(parent);
     }
 }

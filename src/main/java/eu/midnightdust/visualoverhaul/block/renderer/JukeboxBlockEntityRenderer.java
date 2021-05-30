@@ -2,42 +2,41 @@ package eu.midnightdust.visualoverhaul.block.renderer;
 
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
-import eu.midnightdust.visualoverhaul.util.SoundTest;
+import eu.midnightdust.visualoverhaul.util.sound.SoundTest;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.block.SideShapeType;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.util.math.Vector3f;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.Random;
 
 @Environment(EnvType.CLIENT)
-public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBlockEntity> {
+public class JukeboxBlockEntityRenderer extends BlockEntityRenderer<JukeboxBlockEntity> {
     private ItemStack record;
     private Identifier discItem;
 
-    public JukeboxBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
+    public JukeboxBlockEntityRenderer(BlockEntityRenderDispatcher blockEntityRenderDispatcher) {
+        super(blockEntityRenderDispatcher);
     }
 
     @Override
     public void render(JukeboxBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (VOConfig.jukebox) {
-            int lightAbove = WorldRenderer.getLightmapCoordinates(Objects.requireNonNull(blockEntity.getWorld()), blockEntity.getPos().up());
+            int lightAbove = WorldRenderer.getLightmapCoordinates(blockEntity.getWorld(), blockEntity.getPos().up());
 
             // Tries to get the disc using the serverside method
             if (blockEntity.getRecord() != ItemStack.EMPTY) {
@@ -65,18 +64,18 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
                 record = ItemStack.EMPTY;
             }
 
-            if (!record.isEmpty()) {
-                record.setCount(2);
-                matrices.push();
 
-                matrices.translate(0.5f, 1.03f, 0.5f);
-                matrices.scale(0.75f, 0.75f, 0.75f);
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(Util.getMeasuringTimeMs() / 9.0f));
-                MinecraftClient.getInstance().getItemRenderer().renderItem(record, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers, 0);
+            record.setCount(2);
 
-                matrices.pop();
-            }
-            if (VOConfig.jukebox_fake_block && !blockEntity.getWorld().getBlockState(blockEntity.getPos().up()).isSideSolid(blockEntity.getWorld(),blockEntity.getPos().up(), Direction.DOWN, SideShapeType.FULL)) {
+            matrices.push();
+
+            matrices.translate(0.5f, 1.03f, 0.5f);
+            matrices.scale(0.75f, 0.75f, 0.75f);
+            matrices.multiply(Vector3f.POSITIVE_Y.getDegreesQuaternion((blockEntity.getWorld().getTime() + tickDelta) * 4));
+            MinecraftClient.getInstance().getItemRenderer().renderItem(record, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers);
+
+            matrices.pop();
+            if (VOConfig.jukebox_fake_block && blockEntity.getWorld().getBlockState(blockEntity.getPos().up()).getBlock() == Blocks.AIR) {
                 matrices.push();
                 matrices.translate(0f, 1f, 0f);
                 if (record == ItemStack.EMPTY) {
