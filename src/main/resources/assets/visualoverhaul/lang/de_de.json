@@ -1,0 +1,9 @@
+{
+	"visualoverhaul.midnightconfig.title":"Visual Overhaul Konfiguration",
+	"visualoverhaul.midnightconfig.brewingstand":"Aktiviere Braustand-Verbesserungen",
+	"visualoverhaul.midnightconfig.jukebox":"Aktiviere Plattenspieler-Verbesserungen",
+	"visualoverhaul.midnightconfig.jukebox_fake_block":"Aktiviere Fake-Abdeckhaube auf Plattenspielern",
+	"visualoverhaul.midnightconfig.furnace":"Aktiviere Ofen-Verbesserungen",
+	"visualoverhaul.midnightconfig.coloredItems":"Aktiviere Itemfarben auf Basis von Biomen",
+	"visualoverhaul.midnightconfig.coloredItems.tooltip":"Benötigt Neustart!"
+}
