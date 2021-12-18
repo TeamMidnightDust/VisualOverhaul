@@ -1,7 +1,7 @@
 package eu.midnightdust.visualoverhaul.compat.phonos.init;
 
 //import eu.midnightdust.visualoverhaul.compat.phonos.block.RadioJukeboxTop;
-import io.github.foundationgames.phonos.block.PhonosBlocks;
+//import io.github.foundationgames.phonos.block.PhonosBlocks;
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.minecraft.block.Block;
 import net.minecraft.client.render.RenderLayer;

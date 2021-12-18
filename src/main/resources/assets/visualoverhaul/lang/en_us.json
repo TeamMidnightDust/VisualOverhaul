@@ -1,9 +1,12 @@
 {
 	"visualoverhaul.midnightconfig.title":"Visual Overhaul Config",
-	"visualoverhaul.midnightconfig.brewingstand":"Enable Brewing Stand Enhancements",
-	"visualoverhaul.midnightconfig.jukebox":"Enable Jukebox Enhancements",
-	"visualoverhaul.midnightconfig.jukebox_fake_block":"Enable fake block on jukebox top",
-	"visualoverhaul.midnightconfig.furnace":"Enable Furnace Enhancements",
-	"visualoverhaul.midnightconfig.coloredItems":"Enable biome-based item colors",
-	"visualoverhaul.midnightconfig.coloredItems.tooltip":"Needs restart!"
+	"visualoverhaul.midnightconfig.brewingstand":"Brewing Stand Enhancements",
+	"visualoverhaul.midnightconfig.jukebox":"Jukebox Enhancements",
+	"visualoverhaul.midnightconfig.jukebox_fake_block":"Fake block on jukebox top",
+	"visualoverhaul.midnightconfig.furnace":"Furnace Enhancements",
+	"visualoverhaul.midnightconfig.smoker_particles":"Smoker Particles",
+	"visualoverhaul.midnightconfig.blast_furnace_particles":"Blast Furnace Particles",
+	"visualoverhaul.midnightconfig.coloredItems":"Biome-based item colors",
+	"visualoverhaul.midnightconfig.coloredItems.tooltip":"§cNeeds restart!",
+	"visualoverhaul.midnightconfig.potionEnchantmentGlint":"Potion enchantment glint"
 }

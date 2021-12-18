@@ -5,7 +5,7 @@ import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
-import net.minecraft.block.entity.FurnaceBlockEntity;
+import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
@@ -24,16 +24,15 @@ import net.minecraft.util.math.Vec3f;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
-public class FurnaceBlockEntityRenderer implements BlockEntityRenderer<FurnaceBlockEntity> {
+public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> implements BlockEntityRenderer<E> {
     private final FurnaceWoodenPlanksModel planks;
 
     public FurnaceBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
         this.planks = new FurnaceWoodenPlanksModel(ctx.getLayerModelPart(FurnaceWoodenPlanksModel.WOODEN_PLANKS_MODEL_LAYER));
     }
 
-    @Override
-    public void render(FurnaceBlockEntity blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
-        if (VOConfig.furnace && blockEntity.getCachedState().getBlock().getDefaultState().isOf(Blocks.FURNACE)) {
+    public void render(E blockEntity, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
+        if (VOConfig.furnace && blockEntity != null) {
             BlockState blockState = blockEntity.getCachedState();
             int lightAtBlock = WorldRenderer.getLightmapCoordinates(Objects.requireNonNull(blockEntity.getWorld()), blockEntity.getPos().offset(blockState.get(AbstractFurnaceBlock.FACING)));
             ItemStack item1 = blockEntity.getStack(0);
@@ -44,6 +43,8 @@ public class FurnaceBlockEntityRenderer implements BlockEntityRenderer<FurnaceBl
                 matrices.push();
 
                 matrices.translate(0.5f, 0.58f, 0.5f);
+                if (blockEntity.getCachedState().getBlock().equals(Blocks.SMOKER)) matrices.translate(0f, -0.06f, 0f);
+                if (blockEntity.getCachedState().getBlock().equals(Blocks.BLAST_FURNACE)) matrices.translate(0f, -0.25f, 0f);
                 matrices.scale(1f, 1f, 1f);
                 matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(angle * 3 + 180));
                 matrices.translate(0.0f, 0.0f, -0.4f);
@@ -57,6 +58,8 @@ public class FurnaceBlockEntityRenderer implements BlockEntityRenderer<FurnaceBl
                 matrices.push();
 
                 matrices.translate(0.5f, 0.08f, 0.5f);
+                if (blockEntity.getCachedState().getBlock().equals(Blocks.SMOKER)) matrices.translate(0f, 0.06f, 0f);
+                if (blockEntity.getCachedState().getBlock().equals(Blocks.BLAST_FURNACE)) matrices.translate(0f, 0.24f, 0f);
                 matrices.scale(1f, 1f, 1f);
                 matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(angle * 3 + 180));
                 matrices.translate(0.0f, 0.0f, -0.4f);
@@ -68,10 +71,12 @@ public class FurnaceBlockEntityRenderer implements BlockEntityRenderer<FurnaceBl
             else if (!item2.isEmpty()) {
                 matrices.push();
                 BlockState state = Block.getBlockFromItem(item2.getItem()).getDefaultState();
-                Sprite texture = MinecraftClient.getInstance().getBlockRenderManager().getModel(state).getSprite();
+                Sprite texture = MinecraftClient.getInstance().getBlockRenderManager().getModel(state).getParticleSprite();
                 VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(spriteToTexture(texture)));
 
                 matrices.translate(0.5f, -1.3f, 0.5f);
+                if (blockEntity.getCachedState().getBlock().equals(Blocks.SMOKER)) matrices.translate(0f, 0.06f, 0f);
+                if (blockEntity.getCachedState().getBlock().equals(Blocks.BLAST_FURNACE)) matrices.translate(0f, 0.2f, 0f);
                 matrices.scale(1f, 1f, 1f);
 
 

@@ -8,22 +8,19 @@ import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendereregistry.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
+import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
 import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.FurnaceBlockEntity;
-import net.minecraft.block.entity.JukeboxBlockEntity;
+import net.minecraft.block.entity.*;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.render.*;
@@ -39,9 +36,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.BuiltinBiomes;
 
+import java.util.logging.LogManager;
+
 import static eu.midnightdust.visualoverhaul.VisualOverhaul.*;
 
-@SuppressWarnings("UnstableApiUsage")
 public class VisualOverhaulClient implements ClientModInitializer {
 
     public static Block JukeBoxTop = new JukeboxTop();
@@ -61,10 +59,14 @@ public class VisualOverhaulClient implements ClientModInitializer {
         BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.JUKEBOX, RenderLayer.getCutout());
         BlockRenderLayerMapImpl.INSTANCE.putBlock(JukeBoxTop, RenderLayer.getCutout());
         BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.FURNACE, RenderLayer.getCutout());
+        BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.SMOKER, RenderLayer.getCutout());
+        BlockRenderLayerMapImpl.INSTANCE.putBlock(Blocks.BLAST_FURNACE, RenderLayer.getCutout());
 
-        BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.BREWING_STAND, BrewingStandBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.INSTANCE.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererRegistryImpl.register(BlockEntityType.BREWING_STAND, BrewingStandBlockEntityRenderer::new);
+        BlockEntityRendererRegistryImpl.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
+        BlockEntityRendererRegistryImpl.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererRegistryImpl.register(BlockEntityType.SMOKER, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererRegistryImpl.register(BlockEntityType.BLAST_FURNACE, FurnaceBlockEntityRenderer::new);
 
 //        // Phonos Compat //
 //        if (FabricLoader.getInstance().isModLoaded("phonos")) {
@@ -113,7 +115,7 @@ public class VisualOverhaulClient implements ClientModInitializer {
                         inv.set(i, attachedData.readItemStack());
                     }
                     packetContext.getTaskQueue().execute(() -> {
-                        if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof FurnaceBlockEntity blockEntity) {
+                        if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof AbstractFurnaceBlockEntity blockEntity) {
                             blockEntity.setStack(0, inv.get(0));
                             blockEntity.setStack(1, inv.get(1));
                             blockEntity.setStack(2, inv.get(2));
@@ -128,21 +130,22 @@ public class VisualOverhaulClient implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul","coloredwaterbucket"), modContainer, ResourcePackActivationType.DEFAULT_ENABLED);
         });
 
+
         // Biome-colored Items
         if (VOConfig.coloredItems) {
             ClientTickEvents.END_CLIENT_TICK.register(client -> {
                 int waterColor;
                 int foliageColor;
                 int grassColor;
-                if (client.world != null) {
-                    assert client.player != null;
-                    waterColor = client.world.getColor(client.player.getBlockPos(), BiomeColors.WATER_COLOR);
-                    foliageColor = client.world.getColor(client.player.getBlockPos(), BiomeColors.FOLIAGE_COLOR);
-                    grassColor = client.world.getColor(client.player.getBlockPos(), BiomeColors.GRASS_COLOR);
-                } else {
-                    waterColor = BuiltinBiomes.PLAINS.getWaterColor();
-                    foliageColor = BuiltinBiomes.PLAINS.getFoliageColor();
-                    grassColor = BuiltinBiomes.PLAINS.getFoliageColor();
+                if (client.world != null && client.player != null) {
+                    waterColor = BiomeColors.getWaterColor(client.world, client.player.getBlockPos());
+                    foliageColor = BiomeColors.getFoliageColor(client.world, client.player.getBlockPos());
+                    grassColor = BiomeColors.getGrassColor(client.world, client.player.getBlockPos());
+                }
+                else {
+                    waterColor = 4159204;
+                    foliageColor = -8934609;
+                    grassColor = -8934609;
                 }
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.WATER_BUCKET);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.GRASS_BLOCK);
@@ -155,19 +158,19 @@ public class VisualOverhaulClient implements ClientModInitializer {
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.JUNGLE_LEAVES);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.OAK_LEAVES);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
-                    if (PotionUtil.getPotion(stack) == Potions.WATER && tintIndex == 0) {
+                    if ((PotionUtil.getPotion(stack) == Potions.WATER || PotionUtil.getPotion(stack) == Potions.MUNDANE || PotionUtil.getPotion(stack) == Potions.THICK || PotionUtil.getPotion(stack) == Potions.AWKWARD) && tintIndex == 0) {
                         return waterColor;
                     }
                     return tintIndex > 0 ? -1 : PotionUtil.getColor(stack);
                 }, Items.POTION);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
-                    if (PotionUtil.getPotion(stack) == Potions.WATER && tintIndex == 0) {
+                    if ((PotionUtil.getPotion(stack) == Potions.WATER || PotionUtil.getPotion(stack) == Potions.MUNDANE || PotionUtil.getPotion(stack) == Potions.THICK || PotionUtil.getPotion(stack) == Potions.AWKWARD) && tintIndex == 0) {
                         return waterColor;
                     }
                     return tintIndex > 0 ? -1 : PotionUtil.getColor(stack);
                 }, Items.SPLASH_POTION);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
-                    if (PotionUtil.getPotion(stack) == Potions.WATER && tintIndex == 0) {
+                    if ((PotionUtil.getPotion(stack) == Potions.WATER || PotionUtil.getPotion(stack) == Potions.MUNDANE || PotionUtil.getPotion(stack) == Potions.THICK || PotionUtil.getPotion(stack) == Potions.AWKWARD) && tintIndex == 0) {
                         return waterColor;
                     }
                     return tintIndex > 0 ? -1 : PotionUtil.getColor(stack);

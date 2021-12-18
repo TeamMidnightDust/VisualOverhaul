@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "eu.midnightdust.visualoverhaul.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "mixins": [
     "MixinAbstractFurnaceBlockEntity",
     "MixinBrewingStandBlockEntity",
@@ -9,7 +9,10 @@
     "MixinJukeboxBlockEntity"
   ],
   "client": [
-    "MixinSoundSystem"
+    "MixinSoundSystem",
+    "MixinSmokerBlock",
+    "MixinBlastFurnaceBlock",
+    "MixinPotionItem"
   ],
   "injectors": {
     "defaultRequire": 1

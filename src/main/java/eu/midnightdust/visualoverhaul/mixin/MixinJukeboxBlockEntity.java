@@ -3,13 +3,13 @@ package eu.midnightdust.visualoverhaul.mixin;
 import eu.midnightdust.visualoverhaul.VisualOverhaul;
 import eu.midnightdust.visualoverhaul.util.JukeboxPacketUpdate;
 import io.netty.buffer.Unpooled;
-import net.fabricmc.fabric.api.server.PlayerStream;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +30,7 @@ public abstract class MixinJukeboxBlockEntity extends BlockEntity {
     @Unique
     private static void tick(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity) {
         if (!world.isClient && (JukeboxPacketUpdate.invUpdate || world.getPlayers().size() == JukeboxPacketUpdate.playerUpdate)) {
-            Stream<PlayerEntity> watchingPlayers = PlayerStream.watching(world, pos);
+            Stream<ServerPlayerEntity> watchingPlayers = PlayerLookup.tracking(blockEntity).stream();
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
             passedData.writeItemStack(blockEntity.getRecord());

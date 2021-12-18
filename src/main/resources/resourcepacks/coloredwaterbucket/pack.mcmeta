@@ -1,6 +1,6 @@
 {
   "pack": {
-    "pack_format": 7,
+    "pack_format": 8,
     "description": "Makes the water bucket also change it's color based on biome color"
   }
 }

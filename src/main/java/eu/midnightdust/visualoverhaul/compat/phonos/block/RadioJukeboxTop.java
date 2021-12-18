@@ -1,7 +1,7 @@
 package eu.midnightdust.visualoverhaul.compat.phonos.block;
 
-import io.github.foundationgames.phonos.block.PhonosBlocks;
-import io.github.foundationgames.phonos.block.RadioJukeboxBlock;
+//import io.github.foundationgames.phonos.block.PhonosBlocks;
+//import io.github.foundationgames.phonos.block.RadioJukeboxBlock;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

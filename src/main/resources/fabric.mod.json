@@ -22,9 +22,6 @@
   "entrypoints": {
     "client": [
       "eu.midnightdust.visualoverhaul.VisualOverhaulClient"
-    ],
-    "modmenu": [
-      "eu.midnightdust.visualoverhaul.config.ModMenuIntegration"
     ]
   },
 
@@ -34,6 +31,6 @@
 
   "depends": {
     "fabric": ">=0.28.4",
-    "minecraft": "1.17.x"
+    "minecraft": ">=1.18"
   }
 }
