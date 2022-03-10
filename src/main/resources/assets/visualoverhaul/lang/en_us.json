@@ -8,5 +8,7 @@
 	"visualoverhaul.midnightconfig.blast_furnace_particles":"Blast Furnace Particles",
 	"visualoverhaul.midnightconfig.coloredItems":"Biome-based item colors",
 	"visualoverhaul.midnightconfig.coloredItems.tooltip":"§cNeeds restart!",
+	"visualoverhaul.midnightconfig.coloredLilypad":"Biome-based Lily Pad color",
+	"visualoverhaul.midnightconfig.coloredLilypad.tooltip":"§cNeeds restart!",
 	"visualoverhaul.midnightconfig.potionEnchantmentGlint":"Potion enchantment glint"
 }

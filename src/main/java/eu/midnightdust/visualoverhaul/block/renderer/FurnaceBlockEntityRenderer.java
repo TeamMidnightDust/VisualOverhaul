@@ -54,7 +54,7 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
 
                 matrices.pop();
             }
-            if (!item2.isEmpty() && !ItemTags.LOGS_THAT_BURN.contains(item2.getItem()) && !ItemTags.PLANKS.contains(item2.getItem())) {
+            if (!item2.isEmpty() && !item2.isIn(ItemTags.LOGS_THAT_BURN) && !item2.isIn(ItemTags.PLANKS)) {
                 matrices.push();
 
                 matrices.translate(0.5f, 0.08f, 0.5f);

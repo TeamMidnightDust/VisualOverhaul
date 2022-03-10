@@ -34,9 +34,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.world.biome.BuiltinBiomes;
-
-import java.util.logging.LogManager;
 
 import static eu.midnightdust.visualoverhaul.VisualOverhaul.*;
 
@@ -128,6 +125,7 @@ public class VisualOverhaulClient implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul","nobrewingbottles"), modContainer, ResourcePackActivationType.DEFAULT_ENABLED);
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul","fancyfurnace"), modContainer, ResourcePackActivationType.DEFAULT_ENABLED);
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul","coloredwaterbucket"), modContainer, ResourcePackActivationType.DEFAULT_ENABLED);
+            ResourceManagerHelper.registerBuiltinResourcePack(new Identifier("visualoverhaul","rounddiscs"), modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
         });
 
 
@@ -148,6 +146,11 @@ public class VisualOverhaulClient implements ClientModInitializer {
                     grassColor = -8934609;
                 }
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.WATER_BUCKET);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.AXOLOTL_BUCKET);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.COD_BUCKET);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.PUFFERFISH_BUCKET);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.TROPICAL_FISH_BUCKET);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.SALMON_BUCKET);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.GRASS_BLOCK);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.GRASS);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.TALL_GRASS);
@@ -157,6 +160,9 @@ public class VisualOverhaulClient implements ClientModInitializer {
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.DARK_OAK_LEAVES);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.JUNGLE_LEAVES);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.OAK_LEAVES);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.VINE);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.SUGAR_CANE);
+                if (VOConfig.coloredLilypad) ColorProviderRegistry.ITEM.register((stack, tintIndex) -> foliageColor, Items.LILY_PAD);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
                     if ((PotionUtil.getPotion(stack) == Potions.WATER || PotionUtil.getPotion(stack) == Potions.MUNDANE || PotionUtil.getPotion(stack) == Potions.THICK || PotionUtil.getPotion(stack) == Potions.AWKWARD) && tintIndex == 0) {
                         return waterColor;
@@ -176,6 +182,9 @@ public class VisualOverhaulClient implements ClientModInitializer {
                     return tintIndex > 0 ? -1 : PotionUtil.getColor(stack);
                 }, Items.LINGERING_POTION);
             });
+        }
+        if (VOConfig.coloredLilypad) {
+            ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null ? world.getColor(pos, BiomeColors.FOLIAGE_COLOR) : 0, Blocks.LILY_PAD);
         }
     }
 }
