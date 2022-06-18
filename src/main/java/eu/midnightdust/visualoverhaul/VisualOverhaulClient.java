@@ -8,6 +8,7 @@ import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
@@ -16,7 +17,6 @@ import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
 import net.fabricmc.fabric.impl.blockrenderlayer.BlockRenderLayerMapImpl;
 import net.fabricmc.fabric.impl.client.rendering.BlockEntityRendererRegistryImpl;
-import net.fabricmc.fabric.impl.networking.ClientSidePacketRegistryImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -72,19 +72,19 @@ public class VisualOverhaulClient implements ClientModInitializer {
 //        }
 
         Registry.ITEM.forEach((item) -> {
-            if(item instanceof MusicDiscItem || item.getName().getString().toLowerCase().contains("music_disc") || item.getName().getString().toLowerCase().contains("dynamic_disc")) {
+            if(item instanceof MusicDiscItem || item.getName().getString().toLowerCase().contains("music_disc") || item.getName().getString().toLowerCase().contains("record") || item.getName().getString().toLowerCase().contains("dynamic_disc")) {
                 FabricModelPredicateProviderRegistry.register(item, new Identifier("round"), (stack, world, entity, seed) -> stack.getCount() == 2 ? 1.0F : 0.0F);
             }
         });
 
-        ClientSidePacketRegistryImpl.INSTANCE.register(UPDATE_POTION_BOTTLES,
-                (packetContext, attachedData) -> {
+        ClientPlayNetworking.registerGlobalReceiver(UPDATE_POTION_BOTTLES,
+                (client, handler, attachedData, packetSender) -> {
                     BlockPos pos = attachedData.readBlockPos();
                     DefaultedList<ItemStack> inv = DefaultedList.ofSize(5, ItemStack.EMPTY);
                     for (int i = 0; i < 4; i++) {
                         inv.set(i, attachedData.readItemStack());
                     }
-                    packetContext.getTaskQueue().execute(() -> {
+                    client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof BrewingStandBlockEntity blockEntity) {
                             blockEntity.setStack(0, inv.get(0));
                             blockEntity.setStack(1, inv.get(1));
@@ -94,24 +94,24 @@ public class VisualOverhaulClient implements ClientModInitializer {
                         }
                     });
                 });
-        ClientSidePacketRegistryImpl.INSTANCE.register(UPDATE_RECORD,
-                (packetContext, attachedData) -> {
+        ClientPlayNetworking.registerGlobalReceiver(UPDATE_RECORD,
+                (client, handler, attachedData, packetSender) -> {
                     BlockPos pos = attachedData.readBlockPos();
                     ItemStack record = attachedData.readItemStack();
-                    packetContext.getTaskQueue().execute(() -> {
+                    client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof JukeboxBlockEntity blockEntity) {
                             blockEntity.setRecord(record);
                         }
                     });
                 });
-        ClientSidePacketRegistryImpl.INSTANCE.register(UPDATE_FURNACE_ITEMS,
-                (packetContext, attachedData) -> {
+        ClientPlayNetworking.registerGlobalReceiver(UPDATE_FURNACE_ITEMS,
+                (client, handler, attachedData, packetSender) -> {
                     BlockPos pos = attachedData.readBlockPos();
                     DefaultedList<ItemStack> inv = DefaultedList.ofSize(3, ItemStack.EMPTY);
                     for (int i = 0; i < 2; i++) {
                         inv.set(i, attachedData.readItemStack());
                     }
-                    packetContext.getTaskQueue().execute(() -> {
+                    client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof AbstractFurnaceBlockEntity blockEntity) {
                             blockEntity.setStack(0, inv.get(0));
                             blockEntity.setStack(1, inv.get(1));

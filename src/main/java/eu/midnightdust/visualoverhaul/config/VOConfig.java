@@ -12,4 +12,5 @@ public class VOConfig extends MidnightConfig {
     @Client @Entry public static boolean coloredItems = true;
     @Client @Entry public static boolean coloredLilypad = true;
     @Client @Entry public static boolean potionEnchantmentGlint = true;
+    @Client @Entry(name = "Debug") public static boolean debug = false;
 }

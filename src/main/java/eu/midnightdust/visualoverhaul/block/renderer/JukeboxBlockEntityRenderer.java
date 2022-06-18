@@ -21,10 +21,11 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 
-import java.util.*;
+import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBlockEntity> {
@@ -45,16 +46,15 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
             }
             // Else gets the record sound played at the position of the jukebox //
             else if (SoundTest.getSound(blockEntity.getPos()) != null) {
-                // Converts the Sound Id to the item id of the approprieate disc (minecraft:music_disc.cat -> minecraft:music_disc_cat) //
+                // Converts the Sound Id to the item id of the appropriate disc (minecraft:music_disc.cat -> minecraft:music_disc_cat) //
                 discItem = new Identifier(String.valueOf(SoundTest.getSound(blockEntity.getPos())).replace(".", "_"));
 
                 // Tries to get the disc item from the registry //
                 if (Registry.ITEM.getOrEmpty(discItem).isPresent()) {
-
                     record = new ItemStack(Registry.ITEM.get(discItem));
                 }
                 else {
-                    LogManager.getLogger("VisualOverhaul").warn("Error getting music disc item for" + SoundTest.getSound(blockEntity.getPos()));
+                    if (VOConfig.debug) LogManager.getLogger("VisualOverhaul").warn("Error getting music disc item for " + SoundTest.getSound(blockEntity.getPos()));
                     discItem = null;
                     record = ItemStack.EMPTY;
                 }
@@ -80,9 +80,9 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
                 matrices.push();
                 matrices.translate(0f, 1f, 0f);
                 if (record == ItemStack.EMPTY) {
-                    MinecraftClient.getInstance().getBlockRenderManager().renderBlock(VisualOverhaulClient.JukeBoxTop.getDefaultState().with(Properties.HAS_RECORD, false), blockEntity.getPos().up(), blockEntity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, new Random());
+                    MinecraftClient.getInstance().getBlockRenderManager().renderBlock(VisualOverhaulClient.JukeBoxTop.getDefaultState().with(Properties.HAS_RECORD, false), blockEntity.getPos().up(), blockEntity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, Random.create());
                 } else {
-                    MinecraftClient.getInstance().getBlockRenderManager().renderBlock(VisualOverhaulClient.JukeBoxTop.getDefaultState().with(Properties.HAS_RECORD, true), blockEntity.getPos().up(), blockEntity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, new Random());
+                    MinecraftClient.getInstance().getBlockRenderManager().renderBlock(VisualOverhaulClient.JukeBoxTop.getDefaultState().with(Properties.HAS_RECORD, true), blockEntity.getPos().up(), blockEntity.getWorld(), matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, Random.create());
                 }
                 matrices.pop();
             }

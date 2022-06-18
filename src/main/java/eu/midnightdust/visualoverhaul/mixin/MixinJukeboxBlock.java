@@ -4,7 +4,7 @@ import eu.midnightdust.visualoverhaul.VisualOverhaul;
 import eu.midnightdust.visualoverhaul.util.JukeboxPacketUpdate;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockRenderType;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -47,7 +47,7 @@ public abstract class MixinJukeboxBlock extends BlockWithEntity {
             passedData.writeBlockPos(pos);
             passedData.writeItemStack(blockEntity.getRecord());
 
-            watchingPlayers.forEach(player -> ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(player, VisualOverhaul.UPDATE_RECORD, passedData));
+            watchingPlayers.forEach(player -> ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_RECORD, passedData));
             JukeboxPacketUpdate.invUpdate = false;
         }
         JukeboxPacketUpdate.playerUpdate = world.getPlayers().size();

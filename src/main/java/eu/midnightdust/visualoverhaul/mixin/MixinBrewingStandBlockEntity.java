@@ -3,7 +3,7 @@ package eu.midnightdust.visualoverhaul.mixin;
 import eu.midnightdust.visualoverhaul.VisualOverhaul;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.fabricmc.fabric.impl.networking.ServerSidePacketRegistryImpl;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
@@ -43,7 +43,7 @@ public abstract class MixinBrewingStandBlockEntity extends LockableContainerBloc
             passedData.writeItemStack(blockEntity.getStack(3));
             passedData.writeItemStack(blockEntity.getStack(4));
 
-            watchingPlayers.forEach(player -> ServerSidePacketRegistryImpl.INSTANCE.sendToPlayer(player, VisualOverhaul.UPDATE_POTION_BOTTLES, passedData));
+            watchingPlayers.forEach(player -> ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_POTION_BOTTLES, passedData));
             invUpdate = false;
         }
         playerUpdate = world.getPlayers().size();
