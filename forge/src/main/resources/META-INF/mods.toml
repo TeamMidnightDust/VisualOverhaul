@@ -1,0 +1,42 @@
+modLoader = "javafml"
+loaderVersion = "[43,)"
+#issueTrackerURL = ""
+license = "MIT License"
+
+[[mods]]
+modId = "visualoverhaul"
+version = "${version}"
+displayName = "VisualOverhaul"
+authors = "Motschen, TeamMidnightDust"
+description = '''
+Adds better visuals for certain Minecraft Vanilla Blocks.
+'''
+logoFile = "icon.png"
+
+[[dependencies.visualoverhaul]]
+modId = "forge"
+mandatory = true
+versionRange = "[43,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.visualoverhaul]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.19.2,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.visualoverhaul]]
+modId = "midnightlib"
+mandatory = true
+versionRange = "[1.0.0,)"
+ordering = "BEFORE"
+side = "CLIENT"
+
+[[dependencies.visualoverhaul]]
+modId = "architectury"
+mandatory = true
+versionRange = "[6.0.0,)"
+ordering = "BEFORE"
+side = "BOTH"

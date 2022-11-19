@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "visualoverhaul",
+  "version": "${version}",
+
+  "name": "VisualOverhaul",
+  "description": "Adds better visuals for certain Minecraft Vanilla Blocks.",
+  "authors": [
+    "Motschen",
+    "TeamMidnightDust"
+  ],
+  "contact": {
+    "homepage": "https://www.midnightdust.eu/",
+    "sources": "https://github.com/TeamMidnightDust/VisualOverhaul",
+    "issues": "https://github.com/TeamMidnightDust/VisualOverhaul/issues"
+  },
+
+  "license": "MIT",
+  "icon": "assets/visualoverhaul/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "eu.midnightdust.visualoverhaul.fabric.VisualOverhaulClientFabric"
+    ]
+  },
+
+  "depends": {
+    "fabric": "*",
+    "minecraft": ">=1.19"
+  },
+
+  "mixins": [
+    "visualoverhaul.mixins.json",
+    "visualoverhaul-fabric.mixins.json"
+  ]
+}

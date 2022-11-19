@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "eu.midnightdust.visualoverhaul.forge.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "mixins": [
+    "MixinJukeboxBlock",
+    "MixinAbstractFurnaceBlockEntity",
+    "MixinBrewingStandBlockEntity"
+  ],
+  "client": [
+    "MixinResourcePackManager",
+    "MixinItemColors",
+    "MixinBlockColors"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
