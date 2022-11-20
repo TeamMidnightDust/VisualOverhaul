@@ -1,10 +1,12 @@
 package eu.midnightdust.visualoverhaul.fabric;
 
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
+import eu.midnightdust.visualoverhaul.block.JukeboxTop;
 import eu.midnightdust.visualoverhaul.block.model.FurnaceWoodenPlanksModel;
 import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
+import eu.midnightdust.visualoverhaul.compat.phonos.init.PhonosCompatInit;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -41,6 +43,7 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         VisualOverhaulClient.onInitializeClient();
+        JukeBoxTop = new JukeboxTop();
         // Block only registered on client, because it's just used for the renderer //
         Registry.register(Registry.BLOCK, new Identifier(MOD_ID,"jukebox_top"), JukeBoxTop);
 
@@ -58,11 +61,10 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockEntityType.SMOKER, FurnaceBlockEntityRenderer::new);
         BlockEntityRendererRegistry.register(BlockEntityType.BLAST_FURNACE, FurnaceBlockEntityRenderer::new);
 
-//        // Phonos Compat //
-//        if (FabricLoader.getInstance().isModLoaded("phonos")) {
-//            PhonosCompatInit.init();
-//            BlockEntityRendererRegistry.INSTANCE.register(PhonosBlocks.RADIO_JUKEBOX_ENTITY, RadioJukeboxBlockEntityRenderer::new);
-//        }
+        // Phonos Compat //
+        if (FabricLoader.getInstance().isModLoaded("phonos")) {
+            //PhonosCompatInit.init();
+        }
 
         Registry.ITEM.forEach((item) -> {
             if(item instanceof MusicDiscItem || item.getName().getString().toLowerCase().contains("music_disc") || item.getName().getString().toLowerCase().contains("record") || item.getName().getString().toLowerCase().contains("dynamic_disc")) {
