@@ -6,7 +6,6 @@ import eu.midnightdust.visualoverhaul.block.model.FurnaceWoodenPlanksModel;
 import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
-import eu.midnightdust.visualoverhaul.compat.phonos.init.PhonosCompatInit;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
