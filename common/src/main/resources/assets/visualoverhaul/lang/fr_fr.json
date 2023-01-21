@@ -1,0 +1,14 @@
+{
+	"visualoverhaul.midnightconfig.title":"Configuration de Visual Overhaul",
+	"visualoverhaul.midnightconfig.brewingstand":"Améliorations de l'Alambic",
+	"visualoverhaul.midnightconfig.jukebox":"Améliorations du Jukebox",
+	"visualoverhaul.midnightconfig.jukebox_fake_block":"Faux bloc sur le dessus du Jukebox",
+	"visualoverhaul.midnightconfig.furnace":"Améliorations du Four",
+	"visualoverhaul.midnightconfig.smoker_particles":"Particles du Fumoir",
+	"visualoverhaul.midnightconfig.blast_furnace_particles":"Particles du Haut Fourneau",
+	"visualoverhaul.midnightconfig.coloredItems":"Couleurs des objets basées sur le biome",
+	"visualoverhaul.midnightconfig.coloredItems.tooltip":"§cBesoin de redémarrer !",
+	"visualoverhaul.midnightconfig.coloredLilypad":"Couleur de nénuphar basée sur le biome",
+	"visualoverhaul.midnightconfig.coloredLilypad.tooltip":"§cBesoin de redémarrer !",
+	"visualoverhaul.midnightconfig.potionEnchantmentGlint":"Brillance d'enchantement de potion"
+}
