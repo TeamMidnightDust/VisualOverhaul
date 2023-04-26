@@ -21,7 +21,7 @@ public abstract class MixinSoundSystem {
     @Inject(at = @At("TAIL"),method = "play(Lnet/minecraft/client/sound/SoundInstance;)V")
     public void vo$onPlayRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
         if (soundInstance.getCategory().equals(SoundCategory.RECORDS) && this.started) {
-            jukeboxPos = new BlockPos(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
+            jukeboxPos = BlockPos.ofFloored(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
             SoundTest.soundPos.put(jukeboxPos, soundInstance.getId());
         }
     }
@@ -30,7 +30,7 @@ public abstract class MixinSoundSystem {
     public void vo$onStopRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
         if (soundInstance != null) {
             if (soundInstance.getCategory().equals(SoundCategory.RECORDS)) {
-                jukeboxPos = new BlockPos(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
+                jukeboxPos = BlockPos.ofFloored(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
                 if (SoundTest.soundPos.containsKey(jukeboxPos)) {
                     SoundTest.soundPos.remove(jukeboxPos, soundInstance.getId());
                 }

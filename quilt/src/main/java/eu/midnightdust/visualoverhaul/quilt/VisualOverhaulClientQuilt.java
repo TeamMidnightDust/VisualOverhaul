@@ -1,5 +1,6 @@
 package eu.midnightdust.visualoverhaul.quilt;
 
+import eu.midnightdust.visualoverhaul.IconicButtons;
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
 import eu.midnightdust.visualoverhaul.block.JukeboxTop;
 import eu.midnightdust.visualoverhaul.block.model.FurnaceWoodenPlanksModel;
@@ -7,7 +8,7 @@ import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRend
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
+import eu.midnightdust.visualoverhaul.mixin.JukeboxBlockEntityAccessor;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.minecraft.block.Blocks;
@@ -18,15 +19,19 @@ import net.minecraft.block.entity.JukeboxBlockEntity;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import org.quiltmc.loader.api.ModContainer;
 import org.quiltmc.loader.api.QuiltLoader;
 import org.quiltmc.qsl.base.api.entrypoint.client.ClientModInitializer;
@@ -35,6 +40,7 @@ import org.quiltmc.qsl.lifecycle.api.client.event.ClientTickEvents;
 import org.quiltmc.qsl.networking.api.client.ClientPlayNetworking;
 import org.quiltmc.qsl.resource.loader.api.ResourceLoader;
 import org.quiltmc.qsl.resource.loader.api.ResourcePackActivationType;
+import org.quiltmc.qsl.resource.loader.api.reloader.SimpleSynchronousResourceReloader;
 
 import static eu.midnightdust.visualoverhaul.VisualOverhaul.*;
 import static eu.midnightdust.visualoverhaul.VisualOverhaulClient.JukeBoxTop;
@@ -45,7 +51,7 @@ public class VisualOverhaulClientQuilt implements ClientModInitializer {
         VisualOverhaulClient.onInitializeClient();
         JukeBoxTop = new JukeboxTop();
         // Block only registered on client, because it's just used for the renderer //
-        Registry.register(Registry.BLOCK, new Identifier(MOD_ID,"jukebox_top"), JukeBoxTop);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID,"jukebox_top"), JukeBoxTop);
 
         EntityModelLayerRegistry.registerModelLayer(FurnaceWoodenPlanksModel.WOODEN_PLANKS_MODEL_LAYER, FurnaceWoodenPlanksModel::getTexturedModelData);
 
@@ -55,18 +61,18 @@ public class VisualOverhaulClientQuilt implements ClientModInitializer {
         BlockRenderLayerMap.put(RenderLayer.getCutout(), Blocks.SMOKER);
         BlockRenderLayerMap.put(RenderLayer.getCutout(), Blocks.BLAST_FURNACE);
 
-        BlockEntityRendererRegistry.register(BlockEntityType.BREWING_STAND, BrewingStandBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.SMOKER, FurnaceBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.BLAST_FURNACE, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.BREWING_STAND, BrewingStandBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.SMOKER, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.BLAST_FURNACE, FurnaceBlockEntityRenderer::new);
 
         // Phonos Compat //
         if (QuiltLoader.isModLoaded("phonos")) {
             //PhonosCompatInit.init();
         }
 
-        Registry.ITEM.forEach((item) -> {
+        Registries.ITEM.forEach((item) -> {
             if(item instanceof MusicDiscItem || item.getName().getString().toLowerCase().contains("music_disc") || item.getName().getString().toLowerCase().contains("record") || item.getName().getString().toLowerCase().contains("dynamic_disc")) {
                 ModelPredicateProviderRegistry.register(item, new Identifier("round"), (stack, world, entity, seed) -> stack.getCount() == 2 ? 1.0F : 0.0F);
             }
@@ -95,7 +101,7 @@ public class VisualOverhaulClientQuilt implements ClientModInitializer {
                     ItemStack record = attachedData.readItemStack();
                     client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof JukeboxBlockEntity blockEntity) {
-                            blockEntity.setRecord(record);
+                            ((JukeboxBlockEntityAccessor)blockEntity).getInventory().set(0, record);
                         }
                     });
                 });
@@ -178,5 +184,17 @@ public class VisualOverhaulClientQuilt implements ClientModInitializer {
         if (VOConfig.coloredLilypad) {
             ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null ? world.getColor(pos, BiomeColors.FOLIAGE_COLOR) : 0, Blocks.LILY_PAD);
         }
+        ResourceLoader.get(ResourceType.CLIENT_RESOURCES).registerReloader(new SimpleSynchronousResourceReloader() {
+
+            @Override
+            public Identifier getQuiltId() {
+                return new Identifier("iconic", "button_icons");
+            }
+
+            @Override
+            public void reload(ResourceManager manager) {
+                IconicButtons.reload(manager);
+            }
+        });
     }
 }

@@ -4,6 +4,7 @@ import dev.architectury.networking.NetworkManager;
 import eu.midnightdust.lib.config.MidnightConfig;
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
 import eu.midnightdust.visualoverhaul.block.JukeboxTop;
+import eu.midnightdust.visualoverhaul.mixin.JukeboxBlockEntityAccessor;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
@@ -84,7 +85,7 @@ public class VisualOverhaulClientForge {
                     ItemStack record = attachedData.readItemStack();
                     client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof JukeboxBlockEntity blockEntity) {
-                            blockEntity.setRecord(record);
+                            ((JukeboxBlockEntityAccessor)blockEntity).getInventory().set(0, record);
                         }
                     });
                 });

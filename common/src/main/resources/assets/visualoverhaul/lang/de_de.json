@@ -1,0 +1,23 @@
+{
+	"visualoverhaul.midnightconfig.title":"Visual Overhaul Konfiguration",
+	"visualoverhaul.midnightconfig.brewingstand":"Braustand-Verbesserungen",
+	"visualoverhaul.midnightconfig.jukebox":"Jukebox-Verbesserungen",
+	"visualoverhaul.midnightconfig.jukebox_fake_block":"Fake-Block auf der Jukebox",
+	"visualoverhaul.midnightconfig.furnace":"Ofen-Verbesserungen",
+	"visualoverhaul.midnightconfig.smoker_particles":"Räucherofen-Partikel",
+	"visualoverhaul.midnightconfig.blast_furnace_particles":"Schmelzofen-Partikel",
+	"visualoverhaul.midnightconfig.coloredItems":"Biom-basierte Item-Farben",
+	"visualoverhaul.midnightconfig.coloredItems.tooltip":"§cNeustart benötigt!",
+	"visualoverhaul.midnightconfig.coloredLilypad":"Biom-basierte Seerosenfarbe",
+	"visualoverhaul.midnightconfig.coloredLilypad.tooltip":"§cNeustart benötigt!",
+	"visualoverhaul.midnightconfig.buttonIcons": "Symbole auf Knöpfen",
+	"visualoverhaul.midnightconfig.buttonIconPosition": "Knopfsymbolposition",
+	"visualoverhaul.midnightconfig.enum.IconPosition.LOCATION": "Ortsbasiert",
+	"visualoverhaul.midnightconfig.enum.IconPosition.LEFT": "Links",
+	"visualoverhaul.midnightconfig.enum.IconPosition.RIGHT": "Rechts",
+	"visualoverhaul.midnightconfig.enum.IconPosition.BOTH": "Links & Rechts",
+	"visualoverhaul.midnightconfig.zoomIconOnHover": "Vergrößere Symbol beim Überfahren",
+	"visualoverhaul.midnightconfig.category.gui": "GUI",
+	"visualoverhaul.midnightconfig.category.blocks": "Blöcke",
+	"visualoverhaul.midnightconfig.category.colors": "Farben"
+}

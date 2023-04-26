@@ -46,7 +46,7 @@ public abstract class MixinJukeboxBlock extends BlockWithEntity {
             Stream<ServerPlayerEntity> watchingPlayers = ((ServerChunkManager)world.getChunkManager()).threadedAnvilChunkStorage.getPlayersWatchingChunk(new ChunkPos(pos), false).stream();
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
-            passedData.writeItemStack(blockEntity.getRecord());
+            passedData.writeItemStack(blockEntity.getStack());
 
             watchingPlayers.forEach(player -> NetworkManager.sendToPlayer(player, VisualOverhaul.UPDATE_RECORD, passedData));
             JukeboxPacketUpdate.invUpdate = false;

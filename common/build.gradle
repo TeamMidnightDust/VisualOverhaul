@@ -1,5 +1,4 @@
 architectury {
-    injectInjectables = false
     common(rootProject.enabled_platforms.split(","))
 }
 

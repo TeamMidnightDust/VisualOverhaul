@@ -13,18 +13,21 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformation;
+import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tag.ItemTags;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.math.Vec3f;
+import org.joml.AxisAngle4f;
+import org.joml.Math;
+import org.joml.Quaternionf;
 
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
 public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> implements BlockEntityRenderer<E> {
+    private static final Quaternionf degrees90x = new Quaternionf(new AxisAngle4f(Math.toRadians(90), 1, 0, 0));
     private final FurnaceWoodenPlanksModel planks;
 
     public FurnaceBlockEntityRenderer(BlockEntityRendererFactory.Context ctx) {
@@ -46,10 +49,10 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
                 if (blockEntity.getCachedState().getBlock().equals(Blocks.SMOKER)) matrices.translate(0f, -0.06f, 0f);
                 if (blockEntity.getCachedState().getBlock().equals(Blocks.BLAST_FURNACE)) matrices.translate(0f, -0.25f, 0f);
                 matrices.scale(1f, 1f, 1f);
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(angle * 3 + 180));
+                matrices.multiply(new Quaternionf(new AxisAngle4f(Math.toRadians(angle * 3 + 180), 0, 1, 0)));
                 matrices.translate(0.0f, 0.0f, -0.4f);
-                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
-                MinecraftClient.getInstance().getItemRenderer().renderItem(item1, ModelTransformation.Mode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers, 0);
+                matrices.multiply(degrees90x);
+                MinecraftClient.getInstance().getItemRenderer().renderItem(item1, ModelTransformationMode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers, blockEntity.getWorld(), 0);
 
 
                 matrices.pop();
@@ -61,10 +64,10 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
                 if (blockEntity.getCachedState().getBlock().equals(Blocks.SMOKER)) matrices.translate(0f, 0.06f, 0f);
                 if (blockEntity.getCachedState().getBlock().equals(Blocks.BLAST_FURNACE)) matrices.translate(0f, 0.24f, 0f);
                 matrices.scale(1f, 1f, 1f);
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(angle * 3 + 180));
+                matrices.multiply(new Quaternionf(new AxisAngle4f(Math.toRadians(angle * 3 + 180), 0, 1, 0)));
                 matrices.translate(0.0f, 0.0f, -0.4f);
-                matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(90));
-                MinecraftClient.getInstance().getItemRenderer().renderItem(item2, ModelTransformation.Mode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers,0);
+                matrices.multiply(degrees90x);
+                MinecraftClient.getInstance().getItemRenderer().renderItem(item2, ModelTransformationMode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers, blockEntity.getWorld(), 0);
 
                 matrices.pop();
             }
@@ -80,7 +83,7 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
                 matrices.scale(1f, 1f, 1f);
 
 
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(angle * 3 + 180));
+                matrices.multiply(new Quaternionf(new AxisAngle4f(Math.toRadians(angle * 3 + 180), 0, 1, 0)));
                 planks.getPart().render(matrices, vertexConsumer, lightAtBlock, overlay);
                 matrices.pop();
             }
@@ -88,7 +91,7 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
 
     }
     public static Identifier spriteToTexture(Sprite sprite) {
-        String texture = sprite.getId().getPath();
-        return new Identifier(sprite.getId().getNamespace(), "textures/" + texture + ".png");
+        String texture = sprite.getContents().getId().getPath();
+        return new Identifier(sprite.getAtlasId().getNamespace(), "textures/" + texture + ".png");
     }
 }

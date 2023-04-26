@@ -10,5 +10,14 @@
 	"visualoverhaul.midnightconfig.coloredItems.tooltip":"§cNeeds restart!",
 	"visualoverhaul.midnightconfig.coloredLilypad":"Biome-based Lily Pad color",
 	"visualoverhaul.midnightconfig.coloredLilypad.tooltip":"§cNeeds restart!",
-	"visualoverhaul.midnightconfig.potionEnchantmentGlint":"Potion enchantment glint"
+	"visualoverhaul.midnightconfig.buttonIcons": "Button Icons",
+	"visualoverhaul.midnightconfig.buttonIconPosition": "Button Icon Position",
+	"visualoverhaul.midnightconfig.enum.IconPosition.LOCATION": "Location-dependant",
+	"visualoverhaul.midnightconfig.enum.IconPosition.LEFT": "Left",
+	"visualoverhaul.midnightconfig.enum.IconPosition.RIGHT": "Right",
+	"visualoverhaul.midnightconfig.enum.IconPosition.BOTH": "Left & Right",
+	"visualoverhaul.midnightconfig.zoomIconOnHover": "Zoom icon on hover",
+	"visualoverhaul.midnightconfig.category.gui": "GUI",
+	"visualoverhaul.midnightconfig.category.blocks": "Blocks",
+	"visualoverhaul.midnightconfig.category.colors": "Colors"
 }

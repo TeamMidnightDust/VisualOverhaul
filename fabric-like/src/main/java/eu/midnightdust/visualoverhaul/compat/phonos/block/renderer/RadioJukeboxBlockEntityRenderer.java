@@ -19,8 +19,8 @@ import net.minecraft.client.render.model.json.ModelTransformation;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3f;
 import net.minecraft.util.math.random.Random;
+import org.joml.Vector3f;
 
 @Environment(EnvType.CLIENT)
 public class RadioJukeboxBlockEntityRenderer implements BlockEntityRenderer<RadioJukeboxBlockEntity> {
@@ -36,42 +36,42 @@ public class RadioJukeboxBlockEntityRenderer implements BlockEntityRenderer<Radi
     @Override
     public void render(RadioJukeboxBlockEntity jukebox, float tickDelta, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay) {
         if (VOConfig.jukebox && client.world != null) {
-            matrices.push();
-            Vec3f vecPos = matrices.peek().getNormalMatrix().decomposeLinearTransformation().getMiddle();
-            BlockPos pos = new BlockPos(vecPos.getX(), vecPos.getY(), vecPos.getZ());
-            int lightAbove = WorldRenderer.getLightmapCoordinates(client.world, pos.up());
-
-            // Tries to get the disc using the serverside method
-            if (jukebox.getStack(jukebox.getPlayingSong()) != ItemStack.EMPTY) {
-                record = jukebox.getStack(jukebox.getPlayingSong()).copy();
-                record.setCount(2);
-            }
-            // If the sound is stopped or no sound is playing, the stack is set to an empty stack //
-            else {
-                record = ItemStack.EMPTY;
-            }
-
-            matrices.translate(0.5f, 1.03f, 0.5f);
-            matrices.scale(0.75f, 0.75f, 0.75f);
-
-            if (jukebox.isPlaying()) {
-                rotation = (client.world.getTime() + tickDelta) * 4;
-            }
-            matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation));
-            client.getItemRenderer().renderItem(record, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers, 0);
-
-            matrices.pop();
-            if (VOConfig.jukebox_fake_block && client.world.getBlockState(pos.up()).getBlock() == Blocks.AIR) {
-                blockState = client.world.getBlockState(pos);
-                matrices.push();
-                matrices.translate(0f, 1f, 0f);
-                if (record == ItemStack.EMPTY) {
-                    client.getBlockRenderManager().renderBlock(PhonosCompatInit.RadioJukeboxTop.getDefaultState().with(RadioJukeboxTop.PLAYING, false).with(RadioJukeboxTop.CHANNEL, blockState.get(RadioJukeboxBlock.CHANNEL)), pos.up(), client.world, matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, Random.create());
-                } else {
-                    client.getBlockRenderManager().renderBlock(PhonosCompatInit.RadioJukeboxTop.getDefaultState().with(RadioJukeboxTop.PLAYING, true).with(RadioJukeboxTop.CHANNEL, blockState.get(RadioJukeboxBlock.CHANNEL)), pos.up(), client.world, matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, Random.create());
-                }
-                matrices.pop();
-            }
+//            matrices.push();
+//            Vector3f vecPos = matrices.peek().getNormalMatrix().decomposeLinearTransformation().getMiddle();
+//            BlockPos pos = new BlockPos(vecPos.getX(), vecPos.getY(), vecPos.getZ());
+//            int lightAbove = WorldRenderer.getLightmapCoordinates(client.world, pos.up());
+//
+//            // Tries to get the disc using the serverside method
+//            if (jukebox.getStack(jukebox.getPlayingSong()) != ItemStack.EMPTY) {
+//                record = jukebox.getStack(jukebox.getPlayingSong()).copy();
+//                record.setCount(2);
+//            }
+//            // If the sound is stopped or no sound is playing, the stack is set to an empty stack //
+//            else {
+//                record = ItemStack.EMPTY;
+//            }
+//
+//            matrices.translate(0.5f, 1.03f, 0.5f);
+//            matrices.scale(0.75f, 0.75f, 0.75f);
+//
+//            if (jukebox.isPlaying()) {
+//                rotation = (client.world.getTime() + tickDelta) * 4;
+//            }
+//            matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(rotation));
+//            client.getItemRenderer().renderItem(record, ModelTransformation.Mode.GROUND, lightAbove, overlay, matrices, vertexConsumers, 0);
+//
+//            matrices.pop();
+//            if (VOConfig.jukebox_fake_block && client.world.getBlockState(pos.up()).getBlock() == Blocks.AIR) {
+//                blockState = client.world.getBlockState(pos);
+//                matrices.push();
+//                matrices.translate(0f, 1f, 0f);
+//                if (record == ItemStack.EMPTY) {
+//                    client.getBlockRenderManager().renderBlock(PhonosCompatInit.RadioJukeboxTop.getDefaultState().with(RadioJukeboxTop.PLAYING, false).with(RadioJukeboxTop.CHANNEL, blockState.get(RadioJukeboxBlock.CHANNEL)), pos.up(), client.world, matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, Random.create());
+//                } else {
+//                    client.getBlockRenderManager().renderBlock(PhonosCompatInit.RadioJukeboxTop.getDefaultState().with(RadioJukeboxTop.PLAYING, true).with(RadioJukeboxTop.CHANNEL, blockState.get(RadioJukeboxBlock.CHANNEL)), pos.up(), client.world, matrices, vertexConsumers.getBuffer(RenderLayer.getCutout()), false, Random.create());
+//                }
+//                matrices.pop();
+//            }
         }
     }
 }

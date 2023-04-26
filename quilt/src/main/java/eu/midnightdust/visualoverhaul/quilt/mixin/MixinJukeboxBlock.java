@@ -45,7 +45,7 @@ public abstract class MixinJukeboxBlock extends BlockWithEntity {
             Stream<ServerPlayerEntity> watchingPlayers = PlayerLookup.tracking(blockEntity).stream();
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
-            passedData.writeItemStack(blockEntity.getRecord());
+            passedData.writeItemStack(blockEntity.getStack());
 
             watchingPlayers.forEach(player -> ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_RECORD, passedData));
             JukeboxPacketUpdate.invUpdate = false;

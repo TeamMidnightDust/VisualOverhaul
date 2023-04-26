@@ -1,5 +1,6 @@
 package eu.midnightdust.visualoverhaul.fabric;
 
+import eu.midnightdust.visualoverhaul.IconicButtons;
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
 import eu.midnightdust.visualoverhaul.block.JukeboxTop;
 import eu.midnightdust.visualoverhaul.block.model.FurnaceWoodenPlanksModel;
@@ -7,33 +8,44 @@ import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRend
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
+import eu.midnightdust.visualoverhaul.mixin.JukeboxBlockEntityAccessor;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.ResourcePackActivationType;
+import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.block.entity.JukeboxBlockEntity;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.texture.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.resource.ResourceManager;
+import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+
+import java.io.InputStream;
+import java.util.Properties;
 
 import static eu.midnightdust.visualoverhaul.VisualOverhaul.*;
 import static eu.midnightdust.visualoverhaul.VisualOverhaulClient.JukeBoxTop;
@@ -44,7 +56,7 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
         VisualOverhaulClient.onInitializeClient();
         JukeBoxTop = new JukeboxTop();
         // Block only registered on client, because it's just used for the renderer //
-        Registry.register(Registry.BLOCK, new Identifier(MOD_ID,"jukebox_top"), JukeBoxTop);
+        Registry.register(Registries.BLOCK, new Identifier(MOD_ID,"jukebox_top"), JukeBoxTop);
 
         EntityModelLayerRegistry.registerModelLayer(FurnaceWoodenPlanksModel.WOODEN_PLANKS_MODEL_LAYER, FurnaceWoodenPlanksModel::getTexturedModelData);
 
@@ -54,18 +66,18 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.SMOKER, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BLAST_FURNACE, RenderLayer.getCutout());
 
-        BlockEntityRendererRegistry.register(BlockEntityType.BREWING_STAND, BrewingStandBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.SMOKER, FurnaceBlockEntityRenderer::new);
-        BlockEntityRendererRegistry.register(BlockEntityType.BLAST_FURNACE, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.BREWING_STAND, BrewingStandBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.JUKEBOX, JukeboxBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.FURNACE, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.SMOKER, FurnaceBlockEntityRenderer::new);
+        BlockEntityRendererFactories.register(BlockEntityType.BLAST_FURNACE, FurnaceBlockEntityRenderer::new);
 
         // Phonos Compat //
-        if (FabricLoader.getInstance().isModLoaded("phonos")) {
-            //PhonosCompatInit.init();
-        }
+        //if (FabricLoader.getInstance().isModLoaded("phonos")) {
+        //    PhonosCompatInit.init();
+        //}
 
-        Registry.ITEM.forEach((item) -> {
+        Registries.ITEM.forEach((item) -> {
             if(item instanceof MusicDiscItem || item.getName().getString().toLowerCase().contains("music_disc") || item.getName().getString().toLowerCase().contains("record") || item.getName().getString().toLowerCase().contains("dynamic_disc")) {
                 ModelPredicateProviderRegistry.register(item, new Identifier("round"), (stack, world, entity, seed) -> stack.getCount() == 2 ? 1.0F : 0.0F);
             }
@@ -94,7 +106,7 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
                     ItemStack record = attachedData.readItemStack();
                     client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof JukeboxBlockEntity blockEntity) {
-                            blockEntity.setRecord(record);
+                            ((JukeboxBlockEntityAccessor)blockEntity).getInventory().set(0, record);
                         }
                     });
                 });
@@ -180,5 +192,17 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
         if (VOConfig.coloredLilypad) {
             ColorProviderRegistry.BLOCK.register((state, world, pos, tintIndex) -> world != null ? world.getColor(pos, BiomeColors.FOLIAGE_COLOR) : 0, Blocks.LILY_PAD);
         }
+
+        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new SimpleSynchronousResourceReloadListener() {
+            @Override
+            public Identifier getFabricId() {
+                return new Identifier("iconic", "button_icons");
+            }
+
+            @Override
+            public void reload(ResourceManager manager) {
+                IconicButtons.reload(manager);
+            }
+        });
     }
 }

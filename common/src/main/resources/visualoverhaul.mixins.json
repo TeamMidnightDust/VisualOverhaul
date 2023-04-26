@@ -10,7 +10,10 @@
     "MixinSoundSystem",
     "MixinSmokerBlock",
     "MixinBlastFurnaceBlock",
-    "MixinPotionItem"
+    "MixinPressableWidget",
+    "MixinSliderWidget",
+    "TextureManagerAccessor",
+    "JukeboxBlockEntityAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -17,7 +17,7 @@ public abstract class MixinJukeboxBlockEntity extends BlockEntity {
         super(type, pos, state);
     }
 
-    @Inject(at = @At("RETURN"), method = "getRecord")
+    @Inject(at = @At("RETURN"), method = "getStack")
     public void getRecord(CallbackInfoReturnable<ItemStack> cir) {
         JukeboxPacketUpdate.invUpdate = true;
     }
