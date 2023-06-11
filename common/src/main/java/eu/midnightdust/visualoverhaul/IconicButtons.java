@@ -5,7 +5,7 @@ import eu.midnightdust.visualoverhaul.config.VOConfig;
 import eu.midnightdust.visualoverhaul.mixin.TextureManagerAccessor;
 import eu.midnightdust.visualoverhaul.util.ModIconUtil;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.texture.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -18,7 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class IconicButtons extends DrawableHelper {
+public class IconicButtons {
     MinecraftClient client = MinecraftClient.getInstance();
     private String buttonId;
     private Text prevText;
@@ -31,7 +31,7 @@ public class IconicButtons extends DrawableHelper {
         buttonId = (widget.getMessage().getContent() instanceof TranslatableTextContent translatableTextContent) ? translatableTextContent.getKey().toLowerCase() : "";
         if (VOConfig.buttonIcons && !buttonId.equals("")) {
             if (VOConfig.debug) System.out.println(buttonId);
-            iconId = new Identifier("iconic", "textures/gui/icons/" + buttonId.toLowerCase()+".png");
+            iconId = Identifier.tryParse("iconic:textures/gui/icons/" + buttonId.toLowerCase()+".png");
             if (buttonId.endsWith(".midnightconfig.title"))
             {
                 iconId = new Identifier("modid", buttonId.replace(".midnightconfig.title", "") + "_icon");
@@ -54,7 +54,7 @@ public class IconicButtons extends DrawableHelper {
             if (abstractTexture == MissingSprite.getMissingSpriteTexture()) iconId = null;
         }
     }
-    public void renderIcons(MatrixStack matrices, ClickableWidget widget, float alpha) {
+    public void renderIcons(DrawContext context, ClickableWidget widget, float alpha) {
         if (widget.getMessage() == null) return;
         if (prevText != widget.getMessage()) init(widget);
         if (VOConfig.buttonIcons && !buttonId.equals("") && iconId != null) {
@@ -64,7 +64,6 @@ public class IconicButtons extends DrawableHelper {
             boolean showLeftWhenBoth = (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && !limitedSpace) || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && widget.getX() < scaledWidth/2);
             boolean showRightWhenBoth = (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && !limitedSpace) || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && widget.getX() > scaledWidth/2);
 
-            RenderSystem.setShaderTexture(0, iconId);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
             if (!widget.active) RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, alpha);
             RenderSystem.enableBlend();
@@ -74,10 +73,10 @@ public class IconicButtons extends DrawableHelper {
             int size = 20-inset*2;
 
             if (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.LEFT) || showLeftWhenBoth || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.LOCATION) && widget.getX() < scaledWidth/2))
-                drawTexture(matrices, widget.getX()+inset, widget.getY()+inset, 0, 0, size, size, size, size);
+                context.drawTexture(iconId, widget.getX()+inset, widget.getY()+inset, 0, 0, size, size, size, size);
 
             if (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.RIGHT) || showRightWhenBoth || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.LOCATION) && widget.getX()+widget.getWidth() > scaledWidth/2))
-                drawTexture(matrices, widget.getX()+widget.getWidth()-20+inset, widget.getY()+inset, 0, 0, size, size, size, size);
+                context.drawTexture(iconId, widget.getX()+widget.getWidth()-20+inset, widget.getY()+inset, 0, 0, size, size, size, size);
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         }

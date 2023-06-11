@@ -4,21 +4,7 @@
     "group": "${group}",
     "id": "visualoverhaul",
     "version": "${version}",
-    "name": "VisualOverhaul",
-    "description": "Adds better visuals for certain Minecraft Vanilla Blocks.",
-    "authors": [
-      "Motschen",
-      "TeamMidnightDust"
-    ],
-    "contact": {
-      "homepage": "https://www.midnightdust.eu/",
-      "sources": "https://github.com/TeamMidnightDust/VisualOverhaul",
-      "issues": "https://github.com/TeamMidnightDust/VisualOverhaul/issues"
-    },
-    "license": "MIT",
-    "icon": "assets/visualoverhaul/icon.png",
     "intermediate_mappings": "net.fabricmc:intermediary",
-    "environment": "client",
     "entrypoints": {
       "client_init": [
         "eu.midnightdust.visualoverhaul.quilt.VisualOverhaulClientQuilt"
@@ -45,6 +31,8 @@
         "Motschen": "Author",
         "TeamMidnightDust": "Mascot"
       },
+      "environment": "client",
+      "license": "MIT",
       "contact": {
         "email": "mail@midnightdust.eu",
         "homepage": "https://modrinth.com/mod/visualoverhaul",
