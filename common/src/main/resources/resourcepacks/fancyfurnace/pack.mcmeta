@@ -1,6 +1,6 @@
 {
   "pack": {
-    "pack_format": 9,
+    "pack_format": 15,
     "description": "§2Changes the model of the furnace to be 3D"
   }
 }
