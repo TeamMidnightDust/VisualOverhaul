@@ -1,0 +1,14 @@
+{
+  "defaultMap": {
+	"spriteMap": [
+	  {
+		"sprite": "minecraft:block/furnace_front_on",
+		"material": "canvas:warm_glow"
+	  },
+	  {
+		"sprite": "minecraft:block/campfire_fire",
+		"material": "canvas:warm_glow"
+	  }
+	]
+  }
+}

@@ -1,0 +1,7 @@
+{
+	"parent": "visualoverhaul:item/round_disc_colored_layers",
+	"textures": {
+		"0": "phonos:item/music_disc_inner",
+		"1": "phonos:item/music_disc_outer"
+	}
+}

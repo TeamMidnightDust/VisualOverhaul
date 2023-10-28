@@ -1,0 +1,15 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "biomemakeover:item/music_disk_button_mushrooms"
+	},
+	
+	"overrides": [
+        {
+            "predicate": {
+                "round": 1
+            },
+            "model": "biomemakeover:item/button_mushrooms_music_disk_round"
+        }
+    ]
+}

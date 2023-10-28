@@ -1,0 +1,15 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "minecraft:item/music_disc_wait"
+	},
+	
+	"overrides": [
+        {
+            "predicate": {
+                "round": 1
+            },
+            "model": "minecraft:item/music_disc_wait_round"
+        }
+    ]
+}

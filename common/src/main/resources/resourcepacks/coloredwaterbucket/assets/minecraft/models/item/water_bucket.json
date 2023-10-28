@@ -1,0 +1,7 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer1": "item/water_bucket_overlay",
+        "layer0": "item/water_bucket"
+    }
+}

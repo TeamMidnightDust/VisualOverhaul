@@ -1,0 +1,25 @@
+{
+    "parent": "item/generated",
+    "textures": {
+      "layer0": "recordable:item/copper_record",
+      "layer1": "recordable:item/copper_record_engravings",
+      "layer2": "recordable:item/copper_record_cover_1",
+      "layer3": "recordable:item/copper_record_cover_2",
+      "layer4": "recordable:item/copper_record_cover_3",
+      "layer5": "recordable:item/copper_record_cover_4",
+      "layer6": "recordable:item/copper_record_cover_5",
+      "layer7": "recordable:item/copper_record_cover_6",
+      "layer8": "recordable:item/copper_record_cover_7",
+      "layer9": "recordable:item/copper_record_cover_8",
+      "layer10": "recordable:item/copper_record_cover_9",
+      "layer11": "recordable:item/copper_record_cover_10"
+    },
+	"overrides": [
+        {
+            "predicate": {
+                "round": 1
+            },
+            "model": "recordable:item/copper_record_round"
+        }
+    ]
+}

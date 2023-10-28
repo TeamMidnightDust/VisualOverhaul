@@ -1,0 +1,6 @@
+{
+	"parent": "visualoverhaul:item/round_disc",
+	"textures": {
+		"0": "extra_discs:item/music_disc_sometimes_i_make_video_game_music"
+	}
+}

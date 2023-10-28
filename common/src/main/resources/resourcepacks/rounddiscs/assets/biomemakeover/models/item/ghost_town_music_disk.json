@@ -1,0 +1,15 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "biomemakeover:item/music_disc_ghost_town"
+	},
+	
+	"overrides": [
+        {
+            "predicate": {
+                "round": 1
+            },
+            "model": "biomemakeover:item/ghost_town_music_disk_round"
+        }
+    ]
+}
