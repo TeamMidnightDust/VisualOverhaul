@@ -1,7 +1,0 @@
-{
-    "parent": "item/generated",
-    "textures": {
-        "layer1": "item/axolotl_bucket_overlay",
-        "layer0": "item/axolotl_bucket"
-    }
-}
