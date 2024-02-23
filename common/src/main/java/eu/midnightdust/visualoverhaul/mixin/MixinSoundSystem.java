@@ -7,6 +7,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -16,13 +17,16 @@ public abstract class MixinSoundSystem {
 
     @Shadow private boolean started;
 
-    private BlockPos jukeboxPos;
+    @Unique
+    private BlockPos visualoverhaul$jukeboxPos;
 
     @Inject(at = @At("TAIL"),method = "play(Lnet/minecraft/client/sound/SoundInstance;)V")
     public void vo$onPlayRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
-        if (soundInstance.getCategory().equals(SoundCategory.RECORDS) && this.started) {
-            jukeboxPos = BlockPos.ofFloored(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
-            SoundTest.soundPos.put(jukeboxPos, soundInstance.getId());
+        if (soundInstance != null) {
+            if (soundInstance.getCategory().equals(SoundCategory.RECORDS) && this.started) {
+                visualoverhaul$jukeboxPos = BlockPos.ofFloored(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
+                SoundTest.soundPos.put(visualoverhaul$jukeboxPos, soundInstance.getId());
+            }
         }
     }
 
@@ -30,9 +34,9 @@ public abstract class MixinSoundSystem {
     public void vo$onStopRecordSound(SoundInstance soundInstance, CallbackInfo ci) {
         if (soundInstance != null) {
             if (soundInstance.getCategory().equals(SoundCategory.RECORDS)) {
-                jukeboxPos = BlockPos.ofFloored(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
-                if (SoundTest.soundPos.containsKey(jukeboxPos)) {
-                    SoundTest.soundPos.remove(jukeboxPos, soundInstance.getId());
+                visualoverhaul$jukeboxPos = BlockPos.ofFloored(Math.floor(soundInstance.getX()), Math.floor(soundInstance.getY()), Math.floor(soundInstance.getZ()));
+                if (SoundTest.soundPos.containsKey(visualoverhaul$jukeboxPos)) {
+                    SoundTest.soundPos.remove(visualoverhaul$jukeboxPos, soundInstance.getId());
                 }
             }
         }

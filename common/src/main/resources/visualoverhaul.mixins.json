@@ -12,8 +12,7 @@
     "MixinBlastFurnaceBlock",
     "MixinPressableWidget",
     "MixinSliderWidget",
-    "TextureManagerAccessor",
-    "JukeboxBlockEntityAccessor"
+    "TextureManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

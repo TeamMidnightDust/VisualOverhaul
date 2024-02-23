@@ -1,7 +1,7 @@
-package eu.midnightdust.visualoverhaul.util.forge;
+package eu.midnightdust.visualoverhaul.util.neoforge;
 
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.forgespi.language.IModInfo;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforgespi.language.IModInfo;
 
 import java.nio.file.Path;
 

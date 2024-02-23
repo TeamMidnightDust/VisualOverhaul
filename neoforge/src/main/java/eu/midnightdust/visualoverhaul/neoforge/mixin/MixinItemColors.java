@@ -1,4 +1,4 @@
-package eu.midnightdust.visualoverhaul.forge.mixin;
+package eu.midnightdust.visualoverhaul.neoforge.mixin;
 
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.minecraft.client.color.block.BlockColors;
@@ -11,9 +11,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import static eu.midnightdust.visualoverhaul.forge.VisualOverhaulClientForge.grassColor;
-import static eu.midnightdust.visualoverhaul.forge.VisualOverhaulClientForge.foliageColor;
-import static eu.midnightdust.visualoverhaul.forge.VisualOverhaulClientForge.waterColor;
+import static eu.midnightdust.visualoverhaul.neoforge.VisualOverhaulClientForge.grassColor;
+import static eu.midnightdust.visualoverhaul.neoforge.VisualOverhaulClientForge.foliageColor;
+import static eu.midnightdust.visualoverhaul.neoforge.VisualOverhaulClientForge.waterColor;
 
 @Mixin(ItemColors.class)
 public abstract class MixinItemColors {
@@ -28,7 +28,7 @@ public abstract class MixinItemColors {
             itemColors.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.TROPICAL_FISH_BUCKET);
             itemColors.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.SALMON_BUCKET);
             itemColors.register((stack, tintIndex) -> grassColor, Items.GRASS_BLOCK);
-            itemColors.register((stack, tintIndex) -> grassColor, Items.GRASS);
+            itemColors.register((stack, tintIndex) -> grassColor, Items.SHORT_GRASS);
             itemColors.register((stack, tintIndex) -> grassColor, Items.TALL_GRASS);
             itemColors.register((stack, tintIndex) -> grassColor, Items.FERN);
             itemColors.register((stack, tintIndex) -> grassColor, Items.LARGE_FERN);

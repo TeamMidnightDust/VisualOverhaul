@@ -1,4 +1,4 @@
-package eu.midnightdust.visualoverhaul.forge.mixin;
+package eu.midnightdust.visualoverhaul.neoforge.mixin;
 
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.minecraft.block.Blocks;

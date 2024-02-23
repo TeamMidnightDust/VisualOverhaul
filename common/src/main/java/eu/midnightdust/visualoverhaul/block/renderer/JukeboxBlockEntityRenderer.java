@@ -29,6 +29,8 @@ import org.joml.Quaternionf;
 
 import java.util.Objects;
 
+import static eu.midnightdust.visualoverhaul.VisualOverhaul.jukeboxItems;
+
 @Environment(EnvType.CLIENT)
 public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBlockEntity> {
     private ItemStack record;
@@ -43,8 +45,8 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
             int lightAbove = WorldRenderer.getLightmapCoordinates(Objects.requireNonNull(blockEntity.getWorld()), blockEntity.getPos().up());
 
             // Tries to get the disc using the serverside method
-            if (blockEntity.getStack() != ItemStack.EMPTY) {
-                record = blockEntity.getStack().copy();
+            if (jukeboxItems.containsKey(blockEntity.getPos()) && !jukeboxItems.get(blockEntity.getPos()).isEmpty()) {
+                record = jukeboxItems.get(blockEntity.getPos()).copy();
             }
             // Else gets the record sound played at the position of the jukebox //
             else if (SoundTest.getSound(blockEntity.getPos()) != null) {

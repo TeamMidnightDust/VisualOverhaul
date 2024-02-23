@@ -38,11 +38,12 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
         if (VOConfig.furnace && blockEntity != null) {
             BlockState blockState = blockEntity.getCachedState();
             int lightAtBlock = WorldRenderer.getLightmapCoordinates(Objects.requireNonNull(blockEntity.getWorld()), blockEntity.getPos().offset(blockState.get(AbstractFurnaceBlock.FACING)));
-            ItemStack item1 = blockEntity.getStack(0);
-            ItemStack item2 = blockEntity.getStack(1);
+            ItemStack input = blockEntity.getStack(0);
+            ItemStack fuel = blockEntity.getStack(1);
+            ItemStack output = blockEntity.getStack(2);
             float angle = (blockState.get(AbstractFurnaceBlock.FACING)).asRotation();
 
-            if(!item1.isEmpty()) {
+            if(!input.isEmpty() || !output.isEmpty()) {
                 matrices.push();
 
                 matrices.translate(0.5f, 0.58f, 0.5f);
@@ -52,12 +53,12 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
                 matrices.multiply(new Quaternionf(new AxisAngle4f(Math.toRadians(angle * 3 + 180), 0, 1, 0)));
                 matrices.translate(0.0f, 0.0f, -0.4f);
                 matrices.multiply(degrees90x);
-                MinecraftClient.getInstance().getItemRenderer().renderItem(item1, ModelTransformationMode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers, blockEntity.getWorld(), 0);
+                MinecraftClient.getInstance().getItemRenderer().renderItem(input.isEmpty() ? output : input, ModelTransformationMode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers, blockEntity.getWorld(), 0);
 
 
                 matrices.pop();
             }
-            if (!item2.isEmpty() && !item2.isIn(ItemTags.LOGS_THAT_BURN) && !item2.isIn(ItemTags.PLANKS)) {
+            if (!fuel.isEmpty() && !fuel.isIn(ItemTags.LOGS_THAT_BURN) && !fuel.isIn(ItemTags.PLANKS)) {
                 matrices.push();
 
                 matrices.translate(0.5f, 0.08f, 0.5f);
@@ -67,13 +68,13 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
                 matrices.multiply(new Quaternionf(new AxisAngle4f(Math.toRadians(angle * 3 + 180), 0, 1, 0)));
                 matrices.translate(0.0f, 0.0f, -0.4f);
                 matrices.multiply(degrees90x);
-                MinecraftClient.getInstance().getItemRenderer().renderItem(item2, ModelTransformationMode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers, blockEntity.getWorld(), 0);
+                MinecraftClient.getInstance().getItemRenderer().renderItem(fuel, ModelTransformationMode.GROUND, lightAtBlock, overlay, matrices, vertexConsumers, blockEntity.getWorld(), 0);
 
                 matrices.pop();
             }
-            else if (!item2.isEmpty()) {
+            else if (!fuel.isEmpty()) {
                 matrices.push();
-                BlockState state = Block.getBlockFromItem(item2.getItem()).getDefaultState();
+                BlockState state = Block.getBlockFromItem(fuel.getItem()).getDefaultState();
                 Sprite texture = MinecraftClient.getInstance().getBlockRenderManager().getModel(state).getParticleSprite();
                 VertexConsumer vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutoutNoCull(spriteToTexture(texture)));
 

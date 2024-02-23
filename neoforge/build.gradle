@@ -4,14 +4,15 @@ plugins {
 }
 
 architectury {
+    injectInjectables = false
     platformSetupLoomIde()
-    fabric()
+    neoForge()
 }
 
-loom {
-}
+loom {}
 repositories {
     maven { url "https://api.modrinth.com/maven" }
+    maven {url "https://maven.neoforged.net/releases"}
 }
 
 configurations {
@@ -19,34 +20,31 @@ configurations {
     shadowCommon // Don't use shadow from the shadow plugin because we don't want IDEA to index this.
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
-    archivesBaseName = rootProject.archives_base_name + "-fabric"
+    developmentForge.extendsFrom common
+    archivesBaseName = rootProject.archives_base_name + "-neoforge"
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
-    modApi "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    neoForge "net.neoforged:neoforge:${rootProject.neoforge_version}"
     // Remove the next line if you don't want to depend on the API
-    //modApi "dev.architectury:architectury-fabric:${rootProject.architectury_version}"
-    modImplementation "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-fabric"
-    include "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-fabric"
+    modApi "dev.architectury:architectury-neoforge:${rootProject.architectury_version}"
+    modImplementation "maven.modrinth:midnightlib:1.5.2-neoforge"
+    //include "maven.modrinth:midnightlib:${rootProject.midnightlib_version}-forge"
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
-    shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }
-    //common(project(path: ":fabric-like", configuration: "namedElements")) { transitive false }
-    //shadowCommon(project(path: ":fabric-like", configuration: "transformProductionFabric")) { transitive false }
+    shadowCommon(project(path: ":common", configuration: "transformProductionNeoForge")) { transitive = false }
 }
 
 processResources {
     inputs.property "version", project.version
 
-    filesMatching("fabric.mod.json") {
+    filesMatching("META-INF/mods.toml") {
         expand "version": project.version
     }
 }
 
-
 shadowJar {
+    exclude "fabric.mod.json"
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
@@ -54,7 +52,6 @@ shadowJar {
 }
 
 remapJar {
-    injectAccessWidener = true
     input.set shadowJar.archiveFile
     dependsOn shadowJar
 }
@@ -73,21 +70,20 @@ components.java {
 
 unifiedPublishing {
     project {
-        displayName = "VisualOverhaul v$project.version - Fabric $project.minecraft_version"
+        displayName = "VisualOverhaul v$project.version - NeoForge $project.minecraft_version"
         releaseType = "$project.release_type"
         changelog = releaseChangelog()
         gameVersions = []
-        gameLoaders = ["fabric","quilt"]
+        gameLoaders = ["neoforge"]
+
         mainPublication remapJar
+
         relations {
             depends {
-                curseforge = "fabric-api"
-                modrinth = "fabric-api"
-            }
-            includes {
                 curseforge = "midnightlib"
                 modrinth = "midnightlib"
             }
+            includes {}
         }
 
         var CURSEFORGE_TOKEN = project.findProperty("CURSEFORGE_TOKEN") ?: System.getenv("CURSEFORGE_TOKEN")
@@ -96,6 +92,7 @@ unifiedPublishing {
                 token = CURSEFORGE_TOKEN
                 id = rootProject.curseforge_id
                 gameVersions.addAll "Java 17", project.minecraft_version
+                releaseType = "alpha"
             }
         }
 

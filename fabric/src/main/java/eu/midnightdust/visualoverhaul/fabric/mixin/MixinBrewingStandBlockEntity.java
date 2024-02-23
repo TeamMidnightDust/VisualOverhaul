@@ -14,6 +14,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,8 +25,10 @@ import java.util.stream.Stream;
 @Mixin(BrewingStandBlockEntity.class)
 public abstract class MixinBrewingStandBlockEntity extends LockableContainerBlockEntity {
 
-    private static boolean invUpdate = true;
-    private static int playerUpdate = -1;
+    @Unique
+    private static boolean visualoverhaul$invUpdate = true;
+    @Unique
+    private static int visualoverhaul$playerUpdate = -1;
 
     protected MixinBrewingStandBlockEntity(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
         super(blockEntityType, blockPos, blockState);
@@ -33,7 +36,7 @@ public abstract class MixinBrewingStandBlockEntity extends LockableContainerBloc
 
     @Inject(at = @At("TAIL"), method = "tick")
     private static void tick(World world, BlockPos pos, BlockState state, BrewingStandBlockEntity blockEntity, CallbackInfo ci) {
-        if (!world.isClient && (invUpdate || world.getPlayers().size() == playerUpdate)) {
+        if (!world.isClient && (visualoverhaul$invUpdate || world.getPlayers().size() == visualoverhaul$playerUpdate)) {
             Stream<ServerPlayerEntity> watchingPlayers = PlayerLookup.tracking(blockEntity).stream();
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
@@ -43,14 +46,18 @@ public abstract class MixinBrewingStandBlockEntity extends LockableContainerBloc
             passedData.writeItemStack(blockEntity.getStack(3));
             passedData.writeItemStack(blockEntity.getStack(4));
 
-            watchingPlayers.forEach(player -> ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_POTION_BOTTLES, passedData));
-            invUpdate = false;
+            watchingPlayers.forEach(player -> {
+                if (VisualOverhaul.playersWithMod.contains(player.getUuid())) {
+                    ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_POTION_BOTTLES, passedData);
+                }
+            });
+            visualoverhaul$invUpdate = false;
         }
-        playerUpdate = world.getPlayers().size();
+        visualoverhaul$playerUpdate = world.getPlayers().size();
     }
 
     @Inject(at = @At("RETURN"), method = "getStack")
     public void getStack(int slot, CallbackInfoReturnable<ItemStack> cir) {
-        invUpdate = true;
+        visualoverhaul$invUpdate = true;
     }
 }

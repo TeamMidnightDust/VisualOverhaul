@@ -22,6 +22,9 @@
   "entrypoints": {
     "client": [
       "eu.midnightdust.visualoverhaul.fabric.VisualOverhaulClientFabric"
+    ],
+    "main": [
+      "eu.midnightdust.visualoverhaul.fabric.VisualOverhaulFabric"
     ]
   },
 

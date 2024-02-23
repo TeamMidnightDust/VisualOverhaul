@@ -37,17 +37,21 @@ public abstract class MixinJukeboxBlock extends BlockWithEntity {
 
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type) {
-        return world.isClient() ? null : checkType(type, BlockEntityType.JUKEBOX, MixinJukeboxBlock::tick);
+        return world.isClient() ? null : validateTicker(type, BlockEntityType.JUKEBOX, MixinJukeboxBlock::visualoverhaul$tick);
     }
     @Unique
-    private static void tick(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity) {
+    private static void visualoverhaul$tick(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity) {
         if (!world.isClient && (JukeboxPacketUpdate.invUpdate || world.getPlayers().size() == JukeboxPacketUpdate.playerUpdate)) {
             Stream<ServerPlayerEntity> watchingPlayers = PlayerLookup.tracking(blockEntity).stream();
             PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
             passedData.writeBlockPos(pos);
             passedData.writeItemStack(blockEntity.getStack());
 
-            watchingPlayers.forEach(player -> ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_RECORD, passedData));
+            watchingPlayers.forEach(player -> {
+                if (VisualOverhaul.playersWithMod.contains(player.getUuid())) {
+                    ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_RECORD, passedData);
+                }
+            });
             JukeboxPacketUpdate.invUpdate = false;
         }
         JukeboxPacketUpdate.playerUpdate = world.getPlayers().size();

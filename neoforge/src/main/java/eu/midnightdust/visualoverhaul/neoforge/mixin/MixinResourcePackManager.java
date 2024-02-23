@@ -1,7 +1,7 @@
-package eu.midnightdust.visualoverhaul.forge.mixin;
+package eu.midnightdust.visualoverhaul.neoforge.mixin;
 
 import eu.midnightdust.visualoverhaul.config.VOConfig;
-import eu.midnightdust.visualoverhaul.forge.VisualOverhaulClientForge;
+import eu.midnightdust.visualoverhaul.neoforge.VisualOverhaulClientForge;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ResourcePackProfile;
 import org.apache.commons.compress.utils.Lists;
@@ -19,7 +19,7 @@ import static eu.midnightdust.visualoverhaul.VisualOverhaul.MOD_ID;
 public abstract class MixinResourcePackManager {
     @Shadow private List<ResourcePackProfile> enabled;
 
-    @Inject(method = "Lnet/minecraft/resource/ResourcePackManager;setEnabledProfiles(Ljava/util/Collection;)V", at = @At("TAIL"))
+    @Inject(method = "setEnabledProfiles(Ljava/util/Collection;)V", at = @At("TAIL"))
     private void setDefaultEnabledPacks(CallbackInfo info) {
         if (VOConfig.firstLaunch) {
             List<ResourcePackProfile> enabledPacks = Lists.newArrayList();

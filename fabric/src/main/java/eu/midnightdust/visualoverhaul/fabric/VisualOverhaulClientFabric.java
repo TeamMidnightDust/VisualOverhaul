@@ -8,10 +8,11 @@ import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRend
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
-import eu.midnightdust.visualoverhaul.mixin.JukeboxBlockEntityAccessor;
+import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
@@ -23,16 +24,14 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
-import net.minecraft.block.entity.JukeboxBlockEntity;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.color.world.BiomeColors;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.texture.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MusicDiscItem;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.Registries;
@@ -42,10 +41,6 @@ import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import org.apache.logging.log4j.LogManager;
-
-import java.io.InputStream;
-import java.util.Properties;
 
 import static eu.midnightdust.visualoverhaul.VisualOverhaul.*;
 import static eu.midnightdust.visualoverhaul.VisualOverhaulClient.JukeBoxTop;
@@ -87,16 +82,14 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
                 (client, handler, attachedData, packetSender) -> {
                     BlockPos pos = attachedData.readBlockPos();
                     DefaultedList<ItemStack> inv = DefaultedList.ofSize(5, ItemStack.EMPTY);
-                    for (int i = 0; i < 4; i++) {
+                    for (int i = 0; i <= 4; i++) {
                         inv.set(i, attachedData.readItemStack());
                     }
                     client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof BrewingStandBlockEntity blockEntity) {
-                            blockEntity.setStack(0, inv.get(0));
-                            blockEntity.setStack(1, inv.get(1));
-                            blockEntity.setStack(2, inv.get(2));
-                            blockEntity.setStack(3, inv.get(3));
-                            blockEntity.setStack(4, inv.get(4));
+                            for (int i = 0; i <= 4; i++) {
+                                blockEntity.setStack(i, inv.get(i));
+                            }
                         }
                     });
                 });
@@ -105,23 +98,21 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
                     BlockPos pos = attachedData.readBlockPos();
                     ItemStack record = attachedData.readItemStack();
                     client.execute(() -> {
-                        if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof JukeboxBlockEntity blockEntity) {
-                            ((JukeboxBlockEntityAccessor)blockEntity).getInventory().set(0, record);
-                        }
+                        jukeboxItems.put(pos, record);
                     });
                 });
         ClientPlayNetworking.registerGlobalReceiver(UPDATE_FURNACE_ITEMS,
                 (client, handler, attachedData, packetSender) -> {
                     BlockPos pos = attachedData.readBlockPos();
                     DefaultedList<ItemStack> inv = DefaultedList.ofSize(3, ItemStack.EMPTY);
-                    for (int i = 0; i < 2; i++) {
+                    for (int i = 0; i <= 2; i++) {
                         inv.set(i, attachedData.readItemStack());
                     }
                     client.execute(() -> {
                         if (client.world != null && client.world.getBlockEntity(pos) != null && client.world.getBlockEntity(pos) instanceof AbstractFurnaceBlockEntity blockEntity) {
-                            blockEntity.setStack(0, inv.get(0));
-                            blockEntity.setStack(1, inv.get(1));
-                            blockEntity.setStack(2, inv.get(2));
+                            for (int i = 0; i <= 2; i++) {
+                                blockEntity.setStack(i, inv.get(i));
+                            }
                         }
                     });
                 });
@@ -132,6 +123,13 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID,"fancyfurnace"), modContainer, ResourcePackActivationType.DEFAULT_ENABLED);
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID,"coloredwaterbucket"), modContainer, ResourcePackActivationType.DEFAULT_ENABLED);
             ResourceManagerHelper.registerBuiltinResourcePack(new Identifier(MOD_ID,"rounddiscs"), modContainer, ResourcePackActivationType.ALWAYS_ENABLED);
+        });
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            if (client.player != null) {
+                PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
+                passedData.writeUuid(client.player.getUuid());
+                sender.sendPacket(HELLO_PACKET, passedData);
+            }
         });
 
 
@@ -158,7 +156,7 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.TROPICAL_FISH_BUCKET);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> tintIndex == 0 ? -1 : waterColor, Items.SALMON_BUCKET);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.GRASS_BLOCK);
-                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.GRASS);
+                ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.SHORT_GRASS);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.TALL_GRASS);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.FERN);
                 ColorProviderRegistry.ITEM.register((stack, tintIndex) -> grassColor, Items.LARGE_FERN);

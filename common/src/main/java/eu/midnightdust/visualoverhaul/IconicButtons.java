@@ -23,13 +23,12 @@ public class IconicButtons {
     private String buttonId;
     private Text prevText;
     private Identifier iconId;
-    public IconicButtons(ClickableWidget widget) {
-        init(widget);
-    }
+    public IconicButtons() {}
     public void init(ClickableWidget widget) {
+        if (widget == null || widget.getMessage() == null || widget.getMessage().getContent() == null) return;
         prevText = widget.getMessage();
         buttonId = (widget.getMessage().getContent() instanceof TranslatableTextContent translatableTextContent) ? translatableTextContent.getKey().toLowerCase() : "";
-        if (VOConfig.buttonIcons && !buttonId.equals("")) {
+        if (VOConfig.buttonIcons && !buttonId.isEmpty()) {
             if (VOConfig.debug) System.out.println(buttonId);
             iconId = Identifier.tryParse("iconic:textures/gui/icons/" + buttonId.toLowerCase()+".png");
             if (buttonId.endsWith(".midnightconfig.title"))
@@ -55,7 +54,7 @@ public class IconicButtons {
         }
     }
     public void renderIcons(DrawContext context, ClickableWidget widget, float alpha) {
-        if (widget.getMessage() == null) return;
+        if (widget.getMessage() == null || widget.getWidth() <= 20) return;
         if (prevText != widget.getMessage()) init(widget);
         if (VOConfig.buttonIcons && !buttonId.equals("") && iconId != null) {
             int scaledWidth = client.getWindow().getScaledWidth();
