@@ -1,0 +1,23 @@
+{
+	"visualoverhaul.midnightconfig.title":"Configuración de Visual Overhaul",
+	"visualoverhaul.midnightconfig.brewingstand":"Mejoras en el soporte de pociones",
+	"visualoverhaul.midnightconfig.jukebox":"Mejoras en la caja de música",
+	"visualoverhaul.midnightconfig.jukebox_fake_block":"Bloque falso en la parte superior de la caja de música",
+	"visualoverhaul.midnightconfig.furnace":"Mejoras en el horno",
+	"visualoverhaul.midnightconfig.smoker_particles":"Partículas de ahumador",
+	"visualoverhaul.midnightconfig.blast_furnace_particles":"Partículas del alto horno",
+	"visualoverhaul.midnightconfig.coloredItems":"Colores de objetos basados en el bioma",
+	"visualoverhaul.midnightconfig.coloredItems.tooltip":"§c¡Necesita reiniciar!",
+	"visualoverhaul.midnightconfig.coloredLilypad":"Color de nenúfar basado en el bioma",
+	"visualoverhaul.midnightconfig.coloredLilypad.tooltip":"§c¡Necesita reiniciar!",
+	"visualoverhaul.midnightconfig.buttonIcons": "Iconos de botones",
+	"visualoverhaul.midnightconfig.buttonIconPosition": "Posición del icono del botón",
+	"visualoverhaul.midnightconfig.enum.IconPosition.LOCATION": "Dependiente de la ubicación",
+	"visualoverhaul.midnightconfig.enum.IconPosition.LEFT": "Izquierda",
+	"visualoverhaul.midnightconfig.enum.IconPosition.RIGHT": "Derecha",
+	"visualoverhaul.midnightconfig.enum.IconPosition.BOTH": "Izquierda y derecha",
+	"visualoverhaul.midnightconfig.zoomIconOnHover": "Icono de zoom al pasar el cursor",
+	"visualoverhaul.midnightconfig.category.gui": "GUI",
+	"visualoverhaul.midnightconfig.category.blocks": "Bloques",
+	"visualoverhaul.midnightconfig.category.colors": "Colores"
+}
