@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 
-import static eu.midnightdust.visualoverhaul.VisualOverhaul.MOD_ID;
+import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.MOD_ID;
 
 @Mixin(ResourcePackManager.class)
 public abstract class MixinResourcePackManager {

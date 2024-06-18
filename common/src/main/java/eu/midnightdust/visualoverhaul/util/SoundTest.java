@@ -1,6 +1,7 @@
 package eu.midnightdust.visualoverhaul.util;
 
 import com.google.common.collect.Maps;
+import eu.midnightdust.visualoverhaul.config.VOConfig;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -15,7 +16,7 @@ public class SoundTest {
      * {@link eu.midnightdust.visualoverhaul.mixin.MixinSoundSystem}
      */
     public static Identifier getSound(BlockPos pos) {
-        if (soundPos.containsKey(pos)) {
+        if (VOConfig.jukebox_clientside && soundPos.containsKey(pos)) {
             return soundPos.get(pos);
         }
         return null;

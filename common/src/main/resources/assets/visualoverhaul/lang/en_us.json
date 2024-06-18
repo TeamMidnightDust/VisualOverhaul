@@ -3,6 +3,8 @@
 	"visualoverhaul.midnightconfig.brewingstand":"Brewing Stand Enhancements",
 	"visualoverhaul.midnightconfig.jukebox":"Jukebox Enhancements",
 	"visualoverhaul.midnightconfig.jukebox_fake_block":"Fake block on jukebox top",
+	"visualoverhaul.midnightconfig.jukebox_clientside":"Client-side music disc detection",
+	"visualoverhaul.midnightconfig.jukebox_clientside.tooltip":"Might not be 100% accurate with custom music discs.",
 	"visualoverhaul.midnightconfig.furnace":"Furnace Enhancements",
 	"visualoverhaul.midnightconfig.smoker_particles":"Smoker Particles",
 	"visualoverhaul.midnightconfig.blast_furnace_particles":"Blast Furnace Particles",

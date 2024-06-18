@@ -93,6 +93,6 @@ public class FurnaceBlockEntityRenderer<E extends AbstractFurnaceBlockEntity> im
     }
     public static Identifier spriteToTexture(Sprite sprite) {
         String texture = sprite.getContents().getId().getPath();
-        return new Identifier(sprite.getAtlasId().getNamespace(), "textures/" + texture + ".png");
+        return Identifier.of(sprite.getAtlasId().getNamespace(), "textures/" + texture + ".png");
     }
 }

@@ -1,6 +1,7 @@
 package eu.midnightdust.visualoverhaul.fabric.mixin;
 
-import eu.midnightdust.visualoverhaul.VisualOverhaul;
+import eu.midnightdust.visualoverhaul.VisualOverhaulCommon;
+import eu.midnightdust.visualoverhaul.packet.UpdateItemsPacket;
 import eu.midnightdust.visualoverhaul.util.JukeboxPacketUpdate;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -13,8 +14,10 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.JukeboxBlockEntity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
@@ -41,18 +44,15 @@ public abstract class MixinJukeboxBlock extends BlockWithEntity {
     }
     @Unique
     private static void visualoverhaul$tick(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity) {
-        if (!world.isClient && (JukeboxPacketUpdate.invUpdate || world.getPlayers().size() == JukeboxPacketUpdate.playerUpdate)) {
+        if (!world.isClient && (JukeboxPacketUpdate.invUpdate || world.getPlayers().size() != JukeboxPacketUpdate.playerUpdate)) {
             Stream<ServerPlayerEntity> watchingPlayers = PlayerLookup.tracking(blockEntity).stream();
-            PacketByteBuf passedData = new PacketByteBuf(Unpooled.buffer());
-            passedData.writeBlockPos(pos);
-            passedData.writeItemStack(blockEntity.getStack());
 
             watchingPlayers.forEach(player -> {
-                if (VisualOverhaul.playersWithMod.contains(player.getUuid())) {
-                    ServerPlayNetworking.send(player, VisualOverhaul.UPDATE_RECORD, passedData);
+                if (VisualOverhaulCommon.playersWithMod.contains(player.getUuid())) {
+                    ServerPlayNetworking.send(player, new UpdateItemsPacket(VisualOverhaulCommon.UPDATE_TYPE_RECORD, pos, DefaultedList.ofSize(1, blockEntity.getStack())));
                 }
             });
-            JukeboxPacketUpdate.invUpdate = false;
+            //JukeboxPacketUpdate.invUpdate = false;
         }
         JukeboxPacketUpdate.playerUpdate = world.getPlayers().size();
     }

@@ -1,5 +1,5 @@
 plugins {
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow"
     id "me.shedaniel.unified-publishing"
 }
 
@@ -95,7 +95,7 @@ unifiedPublishing {
             curseforge {
                 token = CURSEFORGE_TOKEN
                 id = rootProject.curseforge_id
-                gameVersions.addAll "Java 17", project.minecraft_version
+                gameVersions.addAll "Java 21", project.minecraft_version
             }
         }
 

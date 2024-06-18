@@ -8,7 +8,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.texture.*;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
@@ -33,7 +32,7 @@ public class IconicButtons {
             iconId = Identifier.tryParse("iconic:textures/gui/icons/" + buttonId.toLowerCase()+".png");
             if (buttonId.endsWith(".midnightconfig.title"))
             {
-                iconId = new Identifier("modid", buttonId.replace(".midnightconfig.title", "") + "_icon");
+                iconId = Identifier.of("modid", buttonId.replace(".midnightconfig.title", "") + "_icon");
                 NativeImageBackedTexture icon = new ModIconUtil(buttonId.replace(".midnightconfig.title", "")).createModIcon();
                 if (icon != null) {
                     client.getTextureManager().registerTexture(iconId, icon);
@@ -84,13 +83,13 @@ public class IconicButtons {
         manager.findResources("textures", path -> path.getPath().contains(".properties")).forEach((id, resource) -> {
             if (manager.getResource(id).isEmpty()) return;
             try (InputStream stream = manager.getResource(id).get().getInputStream()) {
-                Identifier iconId = new Identifier(id.getNamespace(), id.getPath().replace(".properties", ".png"));
+                Identifier iconId = Identifier.of(id.getNamespace(), id.getPath().replace(".properties", ".png"));
                 if (manager.getResource(iconId).isPresent()) return;
 
                 Properties properties = new Properties();
                 properties.load(stream);
                 while (properties.get("properties") != null) {
-                    Identifier propertiesId = new Identifier(properties.getProperty("properties"));
+                    Identifier propertiesId = Identifier.of(properties.getProperty("properties"));
                     String textureId = propertiesId.toString().replace(".properties", ".png");
 
                     properties.clear();
@@ -103,7 +102,7 @@ public class IconicButtons {
                 }
 
                 if (properties.get("texture") != null) {
-                    Identifier textureId = new Identifier(properties.getProperty("texture"));
+                    Identifier textureId = Identifier.of(properties.getProperty("texture"));
                     TextureManager textureManager = MinecraftClient.getInstance().getTextureManager();
                     AbstractTexture abstractTexture = textureManager.getOrDefault(iconId, null);
                     if (abstractTexture == null) {

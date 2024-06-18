@@ -5,22 +5,28 @@ import eu.midnightdust.visualoverhaul.block.model.FurnaceWoodenPlanksModel;
 import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.JukeboxBlockEntityRenderer;
+import eu.midnightdust.visualoverhaul.packet.HelloPacket;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.resource.*;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
 import net.neoforged.neoforgespi.locating.IModFile;
 
-import static eu.midnightdust.visualoverhaul.VisualOverhaul.MOD_ID;
+import java.util.Optional;
 
-@Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.MOD_ID;
+import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.id;
+
+@EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class VisualOverhaulClientEvents {
     @SubscribeEvent
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
@@ -48,18 +54,19 @@ public class VisualOverhaulClientEvents {
     @SubscribeEvent
     public static void addPackFinders(AddPackFindersEvent event) {
         if (event.getPackType() == ResourceType.CLIENT_RESOURCES) {
-            registerResourcePack(event, new Identifier(MOD_ID,"nobrewingbottles"), false, true);
-            registerResourcePack(event, new Identifier(MOD_ID,"fancyfurnace"), false, true);
-            registerResourcePack(event, new Identifier(MOD_ID,"coloredwaterbucket"), false, true);
-            registerResourcePack(event, new Identifier(MOD_ID,"rounddiscs"), true, false);
+            registerResourcePack(event, id("nobrewingbottles"), false, true);
+            registerResourcePack(event, id("fancyfurnace"), false, true);
+            registerResourcePack(event, id("coloredwaterbucket"), false, true);
+            registerResourcePack(event, id("rounddiscs"), true, false);
         }
     }
     private static void registerResourcePack(AddPackFindersEvent event, Identifier id, boolean alwaysEnabled, boolean defaultEnabled) {
         event.addRepositorySource(((profileAdder) -> {
             IModFile file = ModList.get().getModFileById(id.getNamespace()).getFile();
             try {
-                ResourcePackProfile.PackFactory pack = new DirectoryResourcePack.DirectoryBackedFactory(file.findResource("resourcepacks/" + id.getPath()), true);
-                ResourcePackProfile packProfile = ResourcePackProfile.create(id.toString(), Text.of(id.getNamespace()+"/"+id.getPath()), alwaysEnabled, pack, ResourceType.CLIENT_RESOURCES, ResourcePackProfile.InsertionPosition.TOP, ResourcePackSource.BUILTIN);
+                ResourcePackProfile.PackFactory pack = new DirectoryResourcePack.DirectoryBackedFactory(file.findResource("resourcepacks/" + id.getPath()));
+                ResourcePackInfo info = new ResourcePackInfo(id.toString(), Text.of(id.getNamespace()+"/"+id.getPath()), ResourcePackSource.BUILTIN, Optional.empty());
+                ResourcePackProfile packProfile = ResourcePackProfile.create(info, pack, ResourceType.CLIENT_RESOURCES, new ResourcePackPosition(alwaysEnabled, ResourcePackProfile.InsertionPosition.TOP, false));
                 if (packProfile != null) {
                     profileAdder.accept(packProfile);
                     if (defaultEnabled && !alwaysEnabled) VisualOverhaulClientForge.defaultEnabledPacks.add(packProfile);

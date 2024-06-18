@@ -1,8 +1,8 @@
 {
 	"credit": "made by Motschen",
 	"textures": {
-		"0": "item/music_disc_mellohi",
-		"particle": "#0"
+		"0": "item/music_disc_relic",
+		"particle": "item/music_disc_relic"
 	},
 	"elements": [
 		{
@@ -348,7 +348,7 @@
 			"faces": {
 				"north": {"uv": [12, 11, 13, 12], "texture": "#0"},
 				"west": {"uv": [11, 11, 12, 12], "texture": "#0"},
-				"up": {"uv": [12, 10, 13, 11], "rotation": 180, "texture": "#0"}
+				"up": {"uv": [1, 5, 2, 6], "rotation": 180, "texture": "#0"}
 			}
 		},
 		{
@@ -422,25 +422,46 @@
 			"translation": [0, 0, -8]
 		}
 	},
-	"groups": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+	"groups": [
+		0,
+		1,
+		2,
+		3,
+		4,
+		5,
+		6,
+		7,
+		8,
+		9,
+		10,
+		11,
+		12,
+		13,
+		14,
+		15,
+		16,
 		{
 			"name": "group",
 			"origin": [10, 8, 12],
+			"color": 0,
 			"children": [17, 18, 19, 20, 21, 22, 23, 24, 25]
 		},
 		{
 			"name": "group",
 			"origin": [10, 8, 12],
+			"color": 0,
 			"children": [26, 27, 28, 29, 30, 31, 32]
 		},
 		{
 			"name": "group",
 			"origin": [10, 8, 12],
+			"color": 0,
 			"children": [33, 34, 35, 36, 37, 38, 39]
 		},
 		{
 			"name": "group",
 			"origin": [10, 8, 12],
+			"color": 0,
 			"children": [40, 41, 42, 43]
 		}
 	]

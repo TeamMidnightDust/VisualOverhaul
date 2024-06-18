@@ -15,6 +15,9 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Properties;
@@ -29,7 +32,7 @@ import org.joml.Quaternionf;
 
 import java.util.Objects;
 
-import static eu.midnightdust.visualoverhaul.VisualOverhaul.jukeboxItems;
+import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.jukeboxItems;
 
 @Environment(EnvType.CLIENT)
 public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBlockEntity> {
@@ -51,7 +54,7 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
             // Else gets the record sound played at the position of the jukebox //
             else if (SoundTest.getSound(blockEntity.getPos()) != null) {
                 // Converts the Sound ID to the item ID of the appropriate disc (minecraft:music_disc.cat -> minecraft:music_disc_cat) //
-                discItem = new Identifier(String.valueOf(SoundTest.getSound(blockEntity.getPos())).replace(".", "_"));
+                discItem = Identifier.of(String.valueOf(SoundTest.getSound(blockEntity.getPos())).replace(".", "_"));
 
                 // Tries to get the disc item from the registry //
                 if (Registries.ITEM.getOrEmpty(discItem).isPresent()) {
@@ -70,7 +73,8 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
             }
 
             if (!record.isEmpty()) {
-                record.setCount(2);
+                //record.setCount(2);
+                record.applyComponentsFrom(ComponentMap.builder().add(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(710)).build());
                 matrices.push();
 
                 matrices.translate(0.5f, 1.03f, 0.5f);

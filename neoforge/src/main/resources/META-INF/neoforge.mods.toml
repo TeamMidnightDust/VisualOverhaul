@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[1,)"
+loaderVersion = "[2,)"
 #issueTrackerURL = ""
 license = "MIT License"
 
@@ -7,11 +7,12 @@ license = "MIT License"
 modId = "visualoverhaul"
 version = "${version}"
 displayName = "VisualOverhaul"
+logoFile = "icon.png"
 authors = "Motschen, TeamMidnightDust"
 description = '''
 Adds better visuals for certain Minecraft Vanilla Blocks.
 '''
-logoFile = "icon.png"
+
 [[mixins]]
 config = "visualoverhaul.mixins.json"
 [[mixins]]
@@ -19,28 +20,21 @@ config = "visualoverhaul-neoforge.mixins.json"
 
 [[dependencies.visualoverhaul]]
 modId = "neoforge"
-required = true
-versionRange = "[1,)"
+mandatory = true
+versionRange = "[21.0,)"
 ordering = "NONE"
-side = "CLIENT"
+side = "BOTH"
 
 [[dependencies.visualoverhaul]]
 modId = "minecraft"
-required = true
-versionRange = "[1.19.2,)"
+mandatory = true
+versionRange = "[1.21,)"
 ordering = "NONE"
-side = "CLIENT"
+side = "BOTH"
 
 [[dependencies.visualoverhaul]]
 modId = "midnightlib"
-required = true
-versionRange = "[1.0.0,)"
-ordering = "BEFORE"
-side = "CLIENT"
-
-[[dependencies.visualoverhaul]]
-modId = "architectury"
-required = true
-versionRange = "[6.0.0,)"
-ordering = "BEFORE"
+mandatory = true
+versionRange = "[1.0,)"
+ordering = "AFTER"
 side = "BOTH"

@@ -1,8 +1,7 @@
 {
   "required": true,
   "package": "eu.midnightdust.visualoverhaul.neoforge.mixin",
-  "compatibilityLevel": "JAVA_17",
-  "minVersion": "0.8",
+  "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MixinJukeboxBlock",
     "MixinAbstractFurnaceBlockEntity",

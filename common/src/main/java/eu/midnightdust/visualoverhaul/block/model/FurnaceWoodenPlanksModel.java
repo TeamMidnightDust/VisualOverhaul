@@ -5,13 +5,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.Identifier;
 
-import static eu.midnightdust.visualoverhaul.VisualOverhaul.MOD_ID;
+import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.id;
 
 public class FurnaceWoodenPlanksModel extends Model {
     private static ModelPart bb_main;
-    public static final EntityModelLayer WOODEN_PLANKS_MODEL_LAYER = new EntityModelLayer(new Identifier(MOD_ID, "wooden_planks"), "main");
+    public static final EntityModelLayer WOODEN_PLANKS_MODEL_LAYER = new EntityModelLayer(id("wooden_planks"), "main");
 
     public FurnaceWoodenPlanksModel(ModelPart root) {
         super(RenderLayer::getEntitySolid);
@@ -35,7 +34,7 @@ public class FurnaceWoodenPlanksModel extends Model {
         return modelData;
     }
 
-    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha) {
-        bb_main.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+        bb_main.render(matrices, vertices, light, overlay);
     }
 }
