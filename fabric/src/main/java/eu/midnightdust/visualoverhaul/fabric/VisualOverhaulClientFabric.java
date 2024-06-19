@@ -78,7 +78,6 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
 
         ClientPlayNetworking.registerGlobalReceiver(UpdateItemsPacket.PACKET_ID,
                 (payload, context) -> context.client().execute(() -> {
-                    System.out.println(payload.blockTypeID().toString());
                     if (payload.blockTypeID().equals(UPDATE_TYPE_RECORD)) jukeboxItems.put(payload.pos(), payload.inv().getFirst());
                     else if (context.client().world != null && context.client().world.getBlockEntity(payload.pos()) != null) {
                         if (payload.blockTypeID().equals(UPDATE_TYPE_POTION_BOTTLES) && context.client().world.getBlockEntity(payload.pos()) instanceof BrewingStandBlockEntity brewingStand) {
