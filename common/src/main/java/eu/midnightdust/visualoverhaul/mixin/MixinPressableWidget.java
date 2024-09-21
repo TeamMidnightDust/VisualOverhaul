@@ -20,7 +20,6 @@ public abstract class MixinPressableWidget extends ClickableWidget {
     @Inject(at = @At("TAIL"), method = "<init>")
     private void iconic$onInitButton(int i, int j, int k, int l, Text text, CallbackInfo ci) {
         visualoverhaul$iconicButtons = new IconicButtons();
-        visualoverhaul$iconicButtons.init(this);
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/PressableWidget;drawMessage(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/font/TextRenderer;I)V", shift = At.Shift.BEFORE), method = "renderWidget")
