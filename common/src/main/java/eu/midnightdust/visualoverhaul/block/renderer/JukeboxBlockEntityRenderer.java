@@ -13,11 +13,7 @@ import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.WorldRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.component.type.CustomModelDataComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.registry.Registries;
 import net.minecraft.state.property.Properties;
@@ -57,7 +53,7 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
                 discItem = Identifier.of(String.valueOf(SoundTest.getSound(blockEntity.getPos())).replace(".", "_"));
 
                 // Tries to get the disc item from the registry //
-                if (Registries.ITEM.getOrEmpty(discItem).isPresent()) {
+                if (Registries.ITEM.getOptionalValue(discItem).isPresent()) {
                     record = new ItemStack(Registries.ITEM.get(discItem));
                 }
                 else {
@@ -73,15 +69,13 @@ public class JukeboxBlockEntityRenderer implements BlockEntityRenderer<JukeboxBl
             }
 
             if (!record.isEmpty()) {
-                //record.setCount(2);
-                record.applyComponentsFrom(ComponentMap.builder().add(DataComponentTypes.CUSTOM_MODEL_DATA, new CustomModelDataComponent(710)).build());
                 matrices.push();
 
                 matrices.translate(0.5f, 1.03f, 0.5f);
                 matrices.scale(0.75f, 0.75f, 0.75f);
                 matrices.multiply(new Quaternionf(new AxisAngle4f(Math.toRadians(Util.getMeasuringTimeMs() / 9.0f), 0, 1, 0)));
-                MinecraftClient.getInstance().getItemRenderer().renderItem(record, ModelTransformationMode.GROUND, lightAbove, overlay, matrices, vertexConsumers, blockEntity.getWorld(), 0);
 
+                RoundDiscRenderer.render(record.getItem(), lightAbove, overlay, matrices, vertexConsumers);
                 matrices.pop();
             }
             if (VOConfig.jukebox_fake_block && !blockEntity.getWorld().getBlockState(blockEntity.getPos().up()).isSideSolid(blockEntity.getWorld(),blockEntity.getPos().up(), Direction.DOWN, SideShapeType.FULL)) {
