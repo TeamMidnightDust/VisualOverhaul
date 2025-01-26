@@ -20,7 +20,6 @@ public abstract class MixinSliderWidget extends ClickableWidget {
     @Inject(at = @At("TAIL"), method = "<init>")
     private void iconic$onInitButton(int x, int y, int width, int height, Text text, double value, CallbackInfo ci) {
         visualoverhaul$iconicButtons = new IconicButtons();
-        visualoverhaul$iconicButtons.init(this);
     }
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/widget/SliderWidget;drawScrollableText(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/client/font/TextRenderer;II)V", shift = At.Shift.BEFORE), method = "renderWidget")
