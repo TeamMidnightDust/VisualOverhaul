@@ -15,12 +15,15 @@ import net.minecraft.resource.ResourceManager;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.ColorHelper;
+import net.minecraft.util.math.MathHelper;
 import org.apache.logging.log4j.LogManager;
 
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.function.Function;
 
 public class IconicButtons {
     MinecraftClient client = MinecraftClient.getInstance();
@@ -74,24 +77,27 @@ public class IconicButtons {
             boolean showLeftWhenBoth = (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && !limitedSpace) || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && widget.getX() < scaledWidth/2);
             boolean showRightWhenBoth = (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && !limitedSpace) || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && widget.getX() > scaledWidth/2);
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, alpha);
-            if (!widget.active) RenderSystem.setShaderColor(0.3F, 0.3F, 0.3F, alpha);
+            int color = widget.active ? fromArgb(alpha, 1.0F) : fromArgb(alpha, 0.3F);
             RenderSystem.enableBlend();
             RenderSystem.enableDepthTest();
             int inset = 2;
-            if (VOConfig.zoomIconOnHover && widget.isSelected()) inset = 1;
+            if (VOConfig.zoomIconOnHover && widget.isSelected() && widget.active) inset = 1;
             int size = 20-inset*2;
 
             Identifier textureId = ICONS.get(iconId);
 
             if (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.LEFT) || showLeftWhenBoth || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.LOCATION) && widget.getX() < scaledWidth/2))
-                context.drawTexture(RenderLayer::getGuiTextured, textureId, widget.getX()+inset, widget.getY()+inset, 0, 0, size, size, size, size);
+                context.drawTexture(RenderLayer::getGuiTextured, textureId, widget.getX()+inset, widget.getY()+inset, 0, 0, size, size, size, size, size, size, color);
 
             if (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.RIGHT) || showRightWhenBoth || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.LOCATION) && widget.getX()+widget.getWidth() > scaledWidth/2))
-                context.drawTexture(RenderLayer::getGuiTextured, textureId, widget.getX()+widget.getWidth()-20+inset, widget.getY()+inset, 0, 0, size, size, size, size);
+                context.drawTexture(RenderLayer::getGuiTextured, textureId, widget.getX()+widget.getWidth()-20+inset, widget.getY()+inset, 0, 0, size, size, size, size, size, size, color);
 
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.disableBlend();
+            RenderSystem.disableDepthTest();
         }
+    }
+    int fromArgb(float alpha, float brightness) {
+        return ColorHelper.getArgb(MathHelper.floor(alpha*255), MathHelper.floor(brightness*255), MathHelper.floor(brightness*255), MathHelper.floor(brightness*255));
     }
     public static void reload(ResourceManager manager) {
         manager.findResources("textures", path -> path.getNamespace().equals("iconic") && path.getPath().contains(".properties")).forEach((id, resource) -> {
