@@ -13,7 +13,7 @@ public class FurnaceWoodenPlanksModel extends Model {
     public static final EntityModelLayer WOODEN_PLANKS_MODEL_LAYER = new EntityModelLayer(id("wooden_planks"), "main");
 
     public FurnaceWoodenPlanksModel(ModelPart root) {
-        super(RenderLayer::getEntitySolid);
+        super(root, RenderLayer::getEntitySolid);
         bb_main = root;
         bb_main.setPivot(0.0F, 24.0F, 0.0F);
     }
@@ -34,7 +34,7 @@ public class FurnaceWoodenPlanksModel extends Model {
         return modelData;
     }
 
-    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
-        bb_main.render(matrices, vertices, light, overlay);
-    }
+//    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int color) {
+//        bb_main.render(matrices, vertices, light, overlay);
+//    }
 }

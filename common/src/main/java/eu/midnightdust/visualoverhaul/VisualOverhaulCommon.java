@@ -3,6 +3,8 @@ package eu.midnightdust.visualoverhaul;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.UUID;
 
 public class VisualOverhaulCommon {
     public static final String MOD_ID = "visualoverhaul";
+    public static final Logger LOGGER = LoggerFactory.getLogger("VisualOverhaul");
     public static final List<UUID> playersWithMod = new ArrayList<>();
     public static final Map<BlockPos, ItemStack> jukeboxItems = new HashMap<>();
 

@@ -12,6 +12,7 @@ import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -43,7 +44,7 @@ public abstract class MixinAbstractFurnaceBlockEntity extends LockableContainerB
     }
 
     @Inject(at = @At("TAIL"), method = "tick")
-    private static void tick(World world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci) {
+    private static void tick(ServerWorld world, BlockPos pos, BlockState state, AbstractFurnaceBlockEntity blockEntity, CallbackInfo ci) {
         if (world.getBlockState(pos).hasBlockEntity()) {
             if (!world.isClient && (visualoverhaul$invUpdate || world.getPlayers().size() != visualoverhaul$playerUpdate)) {
                 Stream<ServerPlayerEntity> watchingPlayers = PlayerLookup.tracking(blockEntity).stream();

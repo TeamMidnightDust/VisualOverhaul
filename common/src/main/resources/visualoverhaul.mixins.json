@@ -7,11 +7,15 @@
     "MixinJukeboxBlockEntity"
   ],
   "client": [
-    "MixinSoundSystem",
-    "MixinSmokerBlock",
+    "ItemRenderStateAccessor",
     "MixinBlastFurnaceBlock",
+    "MixinConstantTintSource",
+    "MixinGrassTintSource",
+    "MixinPotionTintSource",
     "MixinPressableWidget",
     "MixinSliderWidget",
+    "MixinSmokerBlock",
+    "MixinSoundSystem",
     "TextureManagerAccessor"
   ],
   "injectors": {

@@ -1,7 +1,6 @@
 package eu.midnightdust.visualoverhaul;
 
 import eu.midnightdust.visualoverhaul.config.VOConfig;
-import net.minecraft.block.Block;
 
 import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.MOD_ID;
 
@@ -10,8 +9,6 @@ public class VisualOverhaulClient {
     public static int foliageColor = -8934609;
     public static int grassColor = -8934609;
     public static int potionColor = -13083194;
-
-    public static Block JukeBoxTop;
 
     public static void onInitializeClient() {
         VOConfig.init(MOD_ID, VOConfig.class);

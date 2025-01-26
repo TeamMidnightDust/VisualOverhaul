@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "minecraft:item/tropical_fish_bucket",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      },
+      {
+        "type": "minecraft:potion",
+        "default": -1
+      }
+    ]
+  }
+}

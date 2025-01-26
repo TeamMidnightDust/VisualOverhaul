@@ -8,7 +8,6 @@ import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.*;
 
 @Mod(MOD_ID)
 public class VisualOverhaulForge {
-
     public VisualOverhaulForge() {
         if (FMLEnvironment.dist == Dist.CLIENT) VisualOverhaulClientForge.initClient();
     }
