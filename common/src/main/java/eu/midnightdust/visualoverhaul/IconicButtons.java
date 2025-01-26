@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
 
+import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.LOGGER;
 import static eu.midnightdust.visualoverhaul.util.VOColorUtil.alphaAndBrightness;
 
 public class IconicButtons {
@@ -126,7 +127,7 @@ public class IconicButtons {
                     ICONS.put(iconId, textureId);
                 }
             } catch (Exception e) {
-                LogManager.getLogger("Iconic").error("Error occurred while loading texture.properties {}", id.toString(), e);
+                LOGGER.error("Error occurred while loading texture.properties for button icon {}", id.toString(), e);
             }
         });
     }

@@ -1,7 +1,6 @@
 package eu.midnightdust.visualoverhaul.neoforge;
 
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
-import eu.midnightdust.visualoverhaul.block.JukeboxTop;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import eu.midnightdust.visualoverhaul.util.VOColorUtil;
 import net.minecraft.block.Block;
@@ -12,14 +11,12 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.RenderLayers;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.ResourcePackProfile;
-import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import org.apache.commons.compress.utils.Lists;
 
 import java.util.List;
-import java.util.Objects;
 
 import static eu.midnightdust.visualoverhaul.VisualOverhaulClient.*;
 import static eu.midnightdust.visualoverhaul.VisualOverhaulCommon.*;
@@ -32,12 +29,6 @@ public class VisualOverhaulClientForge {
 
     public static void initClient() {
         VisualOverhaulClient.onInitializeClient();
-        // Block only registered on client, because it's just used for the renderer //
-        BLOCKS.register(Objects.requireNonNull(ModLoadingContext.get().getActiveContainer().getEventBus()));
-        BLOCKS.register("jukebox_top", () -> {
-            VisualOverhaulClient.JukeBoxTop = new JukeboxTop();
-            return VisualOverhaulClient.JukeBoxTop;
-        });
         NeoForge.EVENT_BUS.addListener(VisualOverhaulClientForge::doClientTick);
 
         RenderLayers.setRenderLayer(Blocks.JUKEBOX, RenderLayer.getCutout());

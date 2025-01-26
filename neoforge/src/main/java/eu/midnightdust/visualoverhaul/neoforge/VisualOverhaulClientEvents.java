@@ -1,5 +1,6 @@
 package eu.midnightdust.visualoverhaul.neoforge;
 
+import eu.midnightdust.visualoverhaul.FakeBlocks;
 import eu.midnightdust.visualoverhaul.IconicButtons;
 import eu.midnightdust.visualoverhaul.block.model.FurnaceWoodenPlanksModel;
 import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRenderer;
@@ -49,6 +50,7 @@ public class VisualOverhaulClientEvents {
         @Override
         public void reload(ResourceManager manager) {
             IconicButtons.reload(manager);
+            FakeBlocks.reload(manager);
         }
     }
     @SubscribeEvent

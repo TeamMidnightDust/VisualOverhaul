@@ -1,8 +1,8 @@
 package eu.midnightdust.visualoverhaul.fabric;
 
+import eu.midnightdust.visualoverhaul.FakeBlocks;
 import eu.midnightdust.visualoverhaul.IconicButtons;
 import eu.midnightdust.visualoverhaul.VisualOverhaulClient;
-import eu.midnightdust.visualoverhaul.block.JukeboxTop;
 import eu.midnightdust.visualoverhaul.block.model.FurnaceWoodenPlanksModel;
 import eu.midnightdust.visualoverhaul.block.renderer.BrewingStandBlockEntityRenderer;
 import eu.midnightdust.visualoverhaul.block.renderer.FurnaceBlockEntityRenderer;
@@ -14,7 +14,6 @@ import eu.midnightdust.visualoverhaul.util.VOColorUtil;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelModifier;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.rendering.v1.ColorProviderRegistry;
@@ -28,17 +27,8 @@ import net.minecraft.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.BrewingStandBlockEntity;
 import net.minecraft.client.color.world.BiomeColors;
-import net.minecraft.client.data.ModelProvider;
-import net.minecraft.client.data.Models;
-import net.minecraft.client.model.Model;
-import net.minecraft.client.model.ModelData;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.Items;
-import net.minecraft.potion.Potions;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
 import net.minecraft.util.Identifier;
@@ -51,14 +41,10 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         VisualOverhaulClient.onInitializeClient();
-        JukeBoxTop = new JukeboxTop();
-        // Block only registered on client, because it's just used for the renderer //
-        Registry.register(Registries.BLOCK, id("jukebox_top"), JukeBoxTop);
 
         EntityModelLayerRegistry.registerModelLayer(FurnaceWoodenPlanksModel.WOODEN_PLANKS_MODEL_LAYER, FurnaceWoodenPlanksModel::getTexturedModelData);
 
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.JUKEBOX, RenderLayer.getCutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(JukeBoxTop, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.FURNACE, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.SMOKER, RenderLayer.getCutout());
         BlockRenderLayerMap.INSTANCE.putBlock(Blocks.BLAST_FURNACE, RenderLayer.getCutout());
@@ -131,6 +117,7 @@ public class VisualOverhaulClientFabric implements ClientModInitializer {
             @Override
             public void reload(ResourceManager manager) {
                 IconicButtons.reload(manager);
+                FakeBlocks.reload(manager);
             }
         });
     }
