@@ -10,6 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.Potions;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.util.math.ColorHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +32,8 @@ public class MixinPotionTintSource {
                 if (!WATER_POTIONS.contains(contents.potion().get()))
                     return; // Skip all potions with effects
             }
-            cir.setReturnValue(VisualOverhaulClient.potionColor);
+            if (cir.getReturnValue() == -1) cir.setReturnValue(ColorHelper.fullAlpha(VisualOverhaulClient.potionColor));
+            else cir.setReturnValue(VisualOverhaulClient.potionColor);
         }
     }
 }
