@@ -57,7 +57,6 @@ public class VisualOverhaulClientEvents {
             registerResourcePack(event, id("nobrewingbottles"), false, true);
             registerResourcePack(event, id("fancyfurnace"), false, true);
             registerResourcePack(event, id("coloredwaterbucket"), false, true);
-            registerResourcePack(event, id("rounddiscs"), true, false);
         }
     }
     private static void registerResourcePack(AddPackFindersEvent event, Identifier id, boolean alwaysEnabled, boolean defaultEnabled) {
