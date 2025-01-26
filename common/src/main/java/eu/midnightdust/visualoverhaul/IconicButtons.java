@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import eu.midnightdust.visualoverhaul.config.VOConfig;
 import eu.midnightdust.visualoverhaul.mixin.TextureManagerAccessor;
 import eu.midnightdust.visualoverhaul.util.ModIconUtil;
+import eu.midnightdust.visualoverhaul.util.VOColorUtil;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.widget.ClickableWidget;
@@ -24,6 +25,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.function.Function;
+
+import static eu.midnightdust.visualoverhaul.util.VOColorUtil.alphaAndBrightness;
 
 public class IconicButtons {
     MinecraftClient client = MinecraftClient.getInstance();
@@ -77,7 +80,7 @@ public class IconicButtons {
             boolean showLeftWhenBoth = (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && !limitedSpace) || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && widget.getX() < scaledWidth/2);
             boolean showRightWhenBoth = (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && !limitedSpace) || (VOConfig.buttonIconPosition.equals(VOConfig.IconPosition.BOTH) && widget.getX() > scaledWidth/2);
 
-            int color = widget.active ? fromArgb(alpha, 1.0F) : fromArgb(alpha, 0.3F);
+            int color = widget.active ? alphaAndBrightness(alpha, 1.0F) : alphaAndBrightness(alpha, 0.3F);
             RenderSystem.enableBlend();
             RenderSystem.enableDepthTest();
             int inset = 2;
@@ -95,9 +98,6 @@ public class IconicButtons {
             RenderSystem.disableBlend();
             RenderSystem.disableDepthTest();
         }
-    }
-    int fromArgb(float alpha, float brightness) {
-        return ColorHelper.getArgb(MathHelper.floor(alpha*255), MathHelper.floor(brightness*255), MathHelper.floor(brightness*255), MathHelper.floor(brightness*255));
     }
     public static void reload(ResourceManager manager) {
         manager.findResources("textures", path -> path.getNamespace().equals("iconic") && path.getPath().contains(".properties")).forEach((id, resource) -> {
